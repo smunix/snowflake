@@ -5,15 +5,19 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   inherit (lib.modules) mkIf;
   vscDir = "${config.snowflake.configDir}/vscodium";
-in {
-  options.modules.desktop.editors.vscodium = let
-    inherit (lib.options) mkEnableOption;
-  in {
-    enable = mkEnableOption "telemetry-free vscode";
-  };
+in
+{
+  options.modules.desktop.editors.vscodium =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "telemetry-free vscode";
+    };
 
   config = mkIf config.modules.desktop.editors.vscodium.enable {
     hm.programs.vscode = {
@@ -23,8 +27,9 @@ in {
 
       # Config imports
       extensions =
-        pkgs.vscode-utils.extensionsFromVscodeMarketplace
-        ((import "${vscDir}/custom-extensions.nix").extensions)
+        pkgs.vscode-utils.extensionsFromVscodeMarketplace (
+          (import "${vscDir}/custom-extensions.nix").extensions
+        )
         ++ (with pkgs.vscode-extensions; [
           # Editor
           eamodio.gitlens
@@ -49,8 +54,8 @@ in {
           tamasfe.even-better-toml
           yzhang.markdown-all-in-one
         ]);
-      userSettings = import "${vscDir}/settings.nix" {inherit config;};
-      keybindings = import "${vscDir}/keybindings.nix" {};
+      userSettings = import "${vscDir}/settings.nix" { inherit config; };
+      keybindings = import "${vscDir}/keybindings.nix" { };
     };
   };
 }

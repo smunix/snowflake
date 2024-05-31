@@ -5,14 +5,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.desktop.xmonad = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "Haskell-based (functional) window manager";};
+in
+{
+  options.modules.desktop.xmonad =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "Haskell-based (functional) window manager";
+    };
 
   config = mkIf config.modules.desktop.xmonad.enable {
     modules.desktop = {
@@ -43,15 +49,23 @@ in {
     };
     modules.hardware.kmonad.enable = true;
 
-    nixpkgs.overlays = [inputs.xmonad-contrib.overlay];
+    nixpkgs.overlays = [ inputs.xmonad-contrib.overlay ];
 
     environment.systemPackages = attrValues {
-      inherit (pkgs) libnotify playerctl gxmessage xdotool feh;
+      inherit (pkgs)
+        libnotify
+        playerctl
+        gxmessage
+        xdotool
+        feh
+        ;
       inherit (pkgs.xorg) xwininfo;
     };
 
     services.greetd = {
-      settings.initial_session = {command = "none+xmonad";};
+      settings.initial_session = {
+        command = "none+xmonad";
+      };
     };
 
     services.xserver = {

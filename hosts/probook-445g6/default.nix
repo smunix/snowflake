@@ -3,11 +3,14 @@
   config,
   lib,
   ...
-}: {
-  imports = [./hardware.nix];
+}:
+{
+  imports = [ ./hardware.nix ];
 
   modules = {
-    networking = {networkManager.enable = true;};
+    networking = {
+      networkManager.enable = true;
+    };
 
     themes.active = "catppuccin";
 

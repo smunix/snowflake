@@ -1,7 +1,9 @@
-{config, ...}: let
+{ config, ... }:
+let
   myTerm = config.modules.desktop.terminal.default;
   inherit (config.modules.themes) editor font;
-in {
+in
+{
   # Introduction
   "__comment" = "(VSCode) settings.json => immutable conf-file, managed via (Nix) Home-Manager";
   "update.mode" = "none";
@@ -43,7 +45,7 @@ in {
   "editor.smoothScrolling" = true;
 
   # Terminal
-  "terminal.integrated.env.linux" = {};
+  "terminal.integrated.env.linux" = { };
   "terminal.explorerKind" = "integrated";
   "terminal.external.linuxExec" = toString myTerm;
   "terminal.integrated.tabs.focusMode" = "singleClick";
@@ -78,7 +80,9 @@ in {
   # Language specific
   "haskell.formattingProvider" = "stylish-haskell";
 
-  "[nix]" = {"editor.tabSize" = 2;};
+  "[nix]" = {
+    "editor.tabSize" = 2;
+  };
 
   # Git
   "git.autoFetch" = false;
@@ -97,22 +101,31 @@ in {
   "vim.hlsearch" = true;
   "vim.insertModeKeyBindings" = [
     {
-      "before" = ["j" "j"];
-      "after" = ["<Esc>"];
+      "before" = [
+        "j"
+        "j"
+      ];
+      "after" = [ "<Esc>" ];
     }
   ];
   "vim.normalModeKeyBindingsNonRecursive" = [
     {
-      "before" = ["<leader>" "d"];
-      "after" = ["d" "d"];
+      "before" = [
+        "<leader>"
+        "d"
+      ];
+      "after" = [
+        "d"
+        "d"
+      ];
     }
     {
-      "before" = ["<C-n>"];
-      "commands" = [" =nohl"];
+      "before" = [ "<C-n>" ];
+      "commands" = [ " =nohl" ];
     }
     {
-      "before" = ["K"];
-      "commands" = ["lineBreakInsert"];
+      "before" = [ "K" ];
+      "commands" = [ "lineBreakInsert" ];
       "silent" = true;
     }
   ];

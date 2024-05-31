@@ -5,44 +5,50 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) readFile;
   inherit (lib.modules) mkIf;
   inherit (lib.strings) optionalString;
 
   cfg = config.modules.desktop.extensions.taffybar;
-in {
-  options.modules.desktop.extensions.taffybar = let
-    inherit (lib.options) mkEnableOption;
-  in {
-    enable = mkEnableOption "haskell status-bar library";
-  };
+in
+{
+  options.modules.desktop.extensions.taffybar =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "haskell status-bar library";
+    };
 
   config = mkIf cfg.enable {
-    home.configFile = let
-      active = config.modules.themes.active;
-      taffyDir = "${config.snowflake.configDir}/taffybar";
-    in {
-      taffybar-palette = mkIf (active != null) {
-        target = "taffybar/palette/${active}.css";
-        source = "${taffyDir}/palette/${active}.css";
+    home.configFile =
+      let
+        active = config.modules.themes.active;
+        taffyDir = "${config.snowflake.configDir}/taffybar";
+      in
+      {
+        taffybar-palette = mkIf (active != null) {
+          target = "taffybar/palette/${active}.css";
+          source = "${taffyDir}/palette/${active}.css";
+        };
+        taffybar-css = {
+          target = "taffybar/taffybar.css";
+          text = ''
+            ${optionalString (active != null) ''
+              @import url("palette/${active}.css");
+            ''}
+            ${readFile "${taffyDir}/taffybar.css"}
+          '';
+        };
       };
-      taffybar-css = {
-        target = "taffybar/taffybar.css";
-        text = ''
-          ${optionalString (active != null) ''
-            @import url("palette/${active}.css");
-          ''}
-          ${readFile "${taffyDir}/taffybar.css"}
-        '';
-      };
-    };
 
     # 2-step workaround (https://github.com/taffybar/taffybar/issues/403)
     gtk.iconCache.enable = true;
 
     services.xserver = {
-      gdk-pixbuf.modulePackages = [pkgs.librsvg];
+      gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
       displayManager.sessionCommands = ''
         # 1st-Step Taffybar workaround
         systemctl --user import-environment GDK_PIXBUF_MODULE_FILE DBUS_SESSION_BUS_ADDRESS PATH

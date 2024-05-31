@@ -4,14 +4,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) concatStringsSep toString;
   inherit (lib.attrsets) mapAttrsToList;
   inherit (lib.modules) mkIf mkMerge;
-in {
-  options.modules.desktop.terminal.kitty = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "GPU-accelerated terminal emulator";};
+in
+{
+  options.modules.desktop.terminal.kitty =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "GPU-accelerated terminal emulator";
+    };
 
   config = mkIf config.modules.desktop.terminal.kitty.enable {
     hm.programs.kitty = {
@@ -30,9 +36,9 @@ in {
         background_opacity = "0.8";
         inactive_text_alpha = "1.0";
         disable_ligatures = "cursor";
-        modify_font = concatStringsSep " " (mapAttrsToList (name: value: "${name} ${value}") {
-          cell_height = "110%";
-        });
+        modify_font = concatStringsSep " " (
+          mapAttrsToList (name: value: "${name} ${value}") { cell_height = "110%"; }
+        );
 
         enable_audio_bell = "no";
         bell_on_tab = "no";
@@ -88,75 +94,80 @@ in {
         "ctrl+shift+page_down" = "previous_tab";
       };
 
-      extraConfig = let
-        inherit (config.modules.themes) active;
-      in
+      extraConfig =
+        let
+          inherit (config.modules.themes) active;
+        in
         mkIf (active != null) ''
           include ~/.config/kitty/config/${active}.conf
         '';
     };
 
-    home.configFile = let
-      inherit (config.modules.themes) active;
-    in (mkMerge [
-      {
-        tab-bar = {
-          target = "kitty/tab_bar.py";
-          source = "${config.snowflake.configDir}/kitty/${active}-bar.py";
-        };
-      }
+    home.configFile =
+      let
+        inherit (config.modules.themes) active;
+      in
+      (mkMerge [
+        {
+          tab-bar = {
+            target = "kitty/tab_bar.py";
+            source = "${config.snowflake.configDir}/kitty/${active}-bar.py";
+          };
+        }
 
-      (mkIf (active != null) {
-        # TODO: Find ONE general nix-automation entry for VictorMono
-        kitty-theme = {
-          target = "kitty/config/${active}.conf";
-          text = let
-            inherit (config.modules.themes.colors.main) bright normal types;
-            inherit (config.modules.themes.font.mono) size;
-          in ''
-            font_family               VictorMono NF Medium
-            italic_font               VictorMono NF Medium Italic
+        (mkIf (active != null) {
+          # TODO: Find ONE general nix-automation entry for VictorMono
+          kitty-theme = {
+            target = "kitty/config/${active}.conf";
+            text =
+              let
+                inherit (config.modules.themes.colors.main) bright normal types;
+                inherit (config.modules.themes.font.mono) size;
+              in
+              ''
+                font_family               VictorMono NF Medium
+                italic_font               VictorMono NF Medium Italic
 
-            bold_font                 VictorMono NF SemiBold
-            bold_italic_font          VictorMono NF SemiBold Italic
+                bold_font                 VictorMono NF SemiBold
+                bold_italic_font          VictorMono NF SemiBold Italic
 
-            font_size                 ${toString size}
+                font_size                 ${toString size}
 
-            foreground                ${types.fg}
-            background                ${types.bg}
+                foreground                ${types.fg}
+                background                ${types.bg}
 
-            cursor                    ${normal.yellow}
-            cursor_text_color         ${types.bg}
+                cursor                    ${normal.yellow}
+                cursor_text_color         ${types.bg}
 
-            tab_bar_background        ${types.bg}
-            active_tab_foreground     ${types.bg}
-            active_tab_background     ${normal.magenta}
-            inactive_tab_foreground   ${types.fg}
-            inactive_tab_background   ${types.bg}
+                tab_bar_background        ${types.bg}
+                active_tab_foreground     ${types.bg}
+                active_tab_background     ${normal.magenta}
+                inactive_tab_foreground   ${types.fg}
+                inactive_tab_background   ${types.bg}
 
-            selection_foreground      ${types.bg}
-            selection_background      ${types.highlight}
+                selection_foreground      ${types.bg}
+                selection_background      ${types.highlight}
 
-            color0                    ${normal.black}
-            color1                    ${normal.red}
-            color2                    ${normal.green}
-            color3                    ${normal.yellow}
-            color4                    ${normal.blue}
-            color5                    ${normal.magenta}
-            color6                    ${normal.cyan}
-            color7                    ${normal.white}
+                color0                    ${normal.black}
+                color1                    ${normal.red}
+                color2                    ${normal.green}
+                color3                    ${normal.yellow}
+                color4                    ${normal.blue}
+                color5                    ${normal.magenta}
+                color6                    ${normal.cyan}
+                color7                    ${normal.white}
 
-            color8                    ${bright.black}
-            color9                    ${bright.red}
-            color10                   ${bright.green}
-            color11                   ${bright.yellow}
-            color12                   ${bright.blue}
-            color13                   ${bright.magenta}
-            color14                   ${bright.cyan}
-            color15                   ${bright.white}
-          '';
-        };
-      })
-    ]);
+                color8                    ${bright.black}
+                color9                    ${bright.red}
+                color10                   ${bright.green}
+                color11                   ${bright.yellow}
+                color12                   ${bright.blue}
+                color13                   ${bright.magenta}
+                color14                   ${bright.cyan}
+                color15                   ${bright.white}
+              '';
+          };
+        })
+      ]);
   };
 }

@@ -4,41 +4,45 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.modules) mkIf;
   cfg = config.modules.virtualize.containers.transmission;
-in {
-  options.modules.virtualize.containers.transmission = let
-    inherit (lib.options) mkOption mkEnableOption;
-    inherit (lib.types) path str;
-  in {
-    enable = mkEnableOption "BitTorrent client";
+in
+{
+  options.modules.virtualize.containers.transmission =
+    let
+      inherit (lib.options) mkOption mkEnableOption;
+      inherit (lib.types) path str;
+    in
+    {
+      enable = mkEnableOption "BitTorrent client";
 
-    username = mkOption {
-      type = str;
-      default = "alonzo";
-      example = "username";
-      description = "Transmission RPC User-Name";
-    };
+      username = mkOption {
+        type = str;
+        default = "alonzo";
+        example = "username";
+        description = "Transmission RPC User-Name";
+      };
 
-    password = mkOption {
-      type = str;
-      example = "password";
-      description = "Transmission RPC User-Password";
-    };
+      password = mkOption {
+        type = str;
+        example = "password";
+        description = "Transmission RPC User-Password";
+      };
 
-    download-dir = mkOption {
-      type = path;
-      default = "${config.user.home}/Downloads/Torrents";
-      example = "xyz";
-      description = "The directory where torrents ought to be saved";
+      download-dir = mkOption {
+        type = path;
+        default = "${config.user.home}/Downloads/Torrents";
+        example = "xyz";
+        description = "The directory where torrents ought to be saved";
+      };
     };
-  };
 
   config = mkIf cfg.enable {
     user = {
-      packages = [pkgs.transmission-remote-gtk];
-      extraGroups = ["transmission"];
+      packages = [ pkgs.transmission-remote-gtk ];
+      extraGroups = [ "transmission" ];
     };
 
     containers.transmission = {
@@ -70,13 +74,16 @@ in {
       # (?) web-app status unknown due to failed login attempt.
 
       systemd.services.transmission = {
-        bindsTo = [""];
-        after = [""];
+        bindsTo = [ "" ];
+        after = [ "" ];
       };
 
       networking.firewall = {
-        allowedTCPPorts = [9091 51413];
-        allowedUDPPorts = [51413];
+        allowedTCPPorts = [
+          9091
+          51413
+        ];
+        allowedUDPPorts = [ 51413 ];
       };
 
       services.transmission = {

@@ -4,70 +4,85 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.meta) getExe;
   inherit (lib.strings) optionalString;
   cfg = config.modules.desktop.editors.emacs;
-in {
-  options.modules.desktop.editors.emacs = let
-    inherit (lib.options) mkEnableOption mkOption;
-    inherit (lib.types) enum nullOr package;
-  in {
-    enable = mkEnableOption "Sprinkle a bit of magic to our nix-flake.";
-    package = mkOption {
-      type = package;
-      default =
-        if (config.modules.desktop.envProto == "wayland")
-        then pkgs.emacs-pgtk
-        else pkgs.emacs-git.override {withGTK3 = true;};
-      description = "Emacs package which will be installed in our flake system.";
+in
+{
+  options.modules.desktop.editors.emacs =
+    let
+      inherit (lib.options) mkEnableOption mkOption;
+      inherit (lib.types) enum nullOr package;
+    in
+    {
+      enable = mkEnableOption "Sprinkle a bit of magic to our nix-flake.";
+      package = mkOption {
+        type = package;
+        default =
+          if (config.modules.desktop.envProto == "wayland") then
+            pkgs.emacs-pgtk
+          else
+            pkgs.emacs-git.override { withGTK3 = true; };
+        description = "Emacs package which will be installed in our flake system.";
+      };
+      terminal = mkOption {
+        type = nullOr (enum [
+          "Eat"
+          "VTerm"
+        ]);
+        default = "VTerm";
+        description = "Terminal emulator used within Emacs.";
+      };
+      template = mkOption {
+        type = nullOr (enum [
+          "doomemacs"
+          "irkalla"
+        ]);
+        default = "doomemacs";
+        description = "Which Emacs configuration to setup.";
+      };
     };
-    terminal = mkOption {
-      type = nullOr (enum ["Eat" "VTerm"]);
-      default = "VTerm";
-      description = "Terminal emulator used within Emacs.";
-    };
-    template = mkOption {
-      type = nullOr (enum ["doomemacs" "irkalla"]);
-      default = "irkalla";
-      description = "Which Emacs configuration to setup.";
-    };
-  };
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.overlays = [inputs.emacs.overlay];
+      nixpkgs.overlays = [ inputs.emacs.overlay ];
 
-      user.packages = attrValues ({
+      user.packages = attrValues (
+        {
           inherit (pkgs) binutils gnutls zstd;
           inherit (pkgs.unstable) emacs-lsp-booster;
           inherit (pkgs.my) my-cookies; # leetcode.el
         }
-        // optionalAttrs config.programs.gnupg.agent.enable {
-          inherit (pkgs) pinentry-emacs;
-        });
+        // optionalAttrs config.programs.gnupg.agent.enable { inherit (pkgs) pinentry-emacs; }
+      );
       environment.wordlist.enable = true; # cape-dict
 
       hm.programs.emacs = {
         enable = true;
         package = cfg.package;
-        extraPackages = epkgs:
-          attrValues ({
+        extraPackages =
+          epkgs:
+          attrValues (
+            {
               inherit (epkgs.melpaPackages) jinx pdf-tools telega;
               inherit (epkgs.treesit-grammars) with-all-grammars;
             }
-            // optionalAttrs (cfg.terminal == "VTerm") {
-              inherit (epkgs.melpaPackages) vterm;
-            });
+            // optionalAttrs (cfg.terminal == "VTerm") { inherit (epkgs.melpaPackages) vterm; }
+          );
       };
 
       hm.services.emacs = {
         enable = true;
         client = {
           enable = true;
-          arguments = ["--create-frame" "--no-wait"];
+          arguments = [
+            "--create-frame"
+            "--no-wait"
+          ];
         };
         socketActivation.enable = true;
       };
@@ -130,34 +145,52 @@ in {
 
     (mkIf (cfg.template == "irkalla") {
       home.configFile = {
-        irkalla-init = let
-          configFile = "${inputs.emacs-dir}/config.org";
-        in {
-          target = "emacs/init.org";
-          source = "${configFile}";
-          onChange = ''
-            ${getExe cfg.package} --batch \
-              --eval "(require 'ob-tangle)" \
-              --eval "(setq org-confirm-babel-evaluate nil)" \
-              --eval '(org-babel-tangle-file "${configFile}")'
-          '';
-        };
+        irkalla-init =
+          let
+            configFile = "${inputs.emacs-dir}/config.org";
+          in
+          {
+            target = "emacs/init.org";
+            source = "${configFile}";
+            onChange = ''
+              ${getExe cfg.package} --batch \
+                --eval "(require 'ob-tangle)" \
+                --eval "(setq org-confirm-babel-evaluate nil)" \
+                --eval '(org-babel-tangle-file "${configFile}")'
+            '';
+          };
       };
     })
 
     (mkIf (cfg.template == "doomemacs") {
-      home.configFile.doomemacs-conf = {
-        target = "doomemacs";
-        source = "${inputs.emacs-dir}";
+      # home.configFile.emacs-conf = {
+      #   target = "emacs";
+      #   source = "${inputs.doomemacs}";
+      #   recursive = true;
+      # };
+
+      home.configFile.doom-conf = {
+        enable = true;
+        target = "doom";
+        source = "${inputs.emacs-dir-doomemacs}";
         recursive = true;
-        onChange = "doom -y sync -u";
+        onChange = ''
+          if [[ ! -d $XDG_CONFIG_HOME/emacs ]]; then
+            ${pkgs.git}/bin/git clone --depth 1 git@github.com:doomemacs/doomemacs.git $XDG_CONFIG_HOME/emacs
+          fi
+          EMACS=${cfg.package}/bin/emacs $XDG_CONFIG_HOME/emacs/bin/doom sync -j60 -u
+        '';
       };
 
-      env.PATH = ["$XDG_CONFIG_HOME/emacs/bin"];
+      env.PATH = [
+        "$XDG_CONFIG_HOME/emacs/bin"
+        "${cfg.package}/bin"
+      ];
 
       environment.variables = {
-        DOOMDIR = "$XDG_CONFIG_HOME/doomemacs";
-        DOOMLOCALDIR = "$XDG_DATA_HOME/doomemacs";
+        EMACSDIR = "$XDG_CONFIG_HOME/emacs";
+        DOOMDIR = "$XDG_CONFIG_HOME/doom";
+        DOOMLOCALDIR = "$XDG_DATA_HOME/doom";
       };
     })
   ]);

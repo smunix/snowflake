@@ -4,22 +4,31 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
-in {
-  options.modules.develop.nix = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "Nix development" // {default = true;};};
+in
+{
+  options.modules.develop.nix =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "Nix development" // {
+        default = true;
+      };
+    };
 
   config = mkMerge [
     (mkIf config.modules.develop.nix.enable {
       user.packages = attrValues {
-        inherit
-          (pkgs)
+        inherit (pkgs)
           alejandra
+          devenv
           nil # Nix Expression Language
           manix
+          nixfmt-rfc-style
           nix-index
           nix-init
           nix-output-monitor
@@ -29,9 +38,7 @@ in {
           ;
       };
 
-      hm.programs.vscode.extensions = attrValues {
-        inherit (pkgs.vscode-extensions.jnoortheen) nix-ide;
-      };
+      hm.programs.vscode.extensions = attrValues { inherit (pkgs.vscode-extensions.jnoortheen) nix-ide; };
     })
 
     (mkIf config.modules.develop.xdg.enable {

@@ -4,36 +4,47 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.modules) mkIf;
-in {
-  options.modules.shell.toolset.htop = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "system monitor";};
+in
+{
+  options.modules.shell.toolset.htop =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "system monitor";
+    };
 
   config = mkIf config.modules.shell.toolset.htop.enable {
     hm.programs.htop = {
       enable = true;
 
-      settings = let
-        inherit (config.hm.lib.htop.leftMeters) bar leftMeters rightMeters text;
-        inherit
-          (config.hm.lib.htop.leftMeters.fields)
-          PID
-          USER
-          NICE
-          IO_PRIORITY
-          M_SIZE
-          M_RESIDENT
-          M_SHARE
-          STATE
-          PERCENT_CPU
-          PERCENT_MEM
-          TIME
-          STARTTIME
-          COMM
-          ;
-      in
+      settings =
+        let
+          inherit (config.hm.lib.htop.leftMeters)
+            bar
+            leftMeters
+            rightMeters
+            text
+            ;
+          inherit (config.hm.lib.htop.leftMeters.fields)
+            PID
+            USER
+            NICE
+            IO_PRIORITY
+            M_SIZE
+            M_RESIDENT
+            M_SHARE
+            STATE
+            PERCENT_CPU
+            PERCENT_MEM
+            TIME
+            STARTTIME
+            COMM
+            ;
+        in
         {
           enable_mouse = true;
           show_program_path = false;

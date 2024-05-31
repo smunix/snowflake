@@ -4,22 +4,29 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) optionalAttrs;
   inherit (lib.modules) mkIf;
 
   cfg = config.modules.desktop.extensions.dunst;
-in {
-  options.modules.desktop.extensions.dunst = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "lightweight notification daemon";};
+in
+{
+  options.modules.desktop.extensions.dunst =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "lightweight notification daemon";
+    };
 
   config = mkIf cfg.enable {
     hm.services.dunst = {
       enable = true;
-      settings = let
-        inherit (config.modules.themes) active;
-      in
+      settings =
+        let
+          inherit (config.modules.themes) active;
+        in
         {
           global =
             {
@@ -70,14 +77,18 @@ in {
               progress_bar_max_width = 300;
 
               # Aesthetics
-              font = let
-                inherit (config.modules.themes.font.mono) family weight;
-              in "${family} ${weight} 11";
+              font =
+                let
+                  inherit (config.modules.themes.font.mono) family weight;
+                in
+                "${family} ${weight} 11";
               frame_width = 2;
               separator_color = "frame";
-              frame_color = let
-                inherit (config.modules.themes.colors.main.types) border;
-              in "${border}";
+              frame_color =
+                let
+                  inherit (config.modules.themes.colors.main.types) border;
+                in
+                "${border}";
               transparency = 0;
 
               line_height = 1;
@@ -102,36 +113,46 @@ in {
               mouse_right_click = "close_all";
             };
 
-          experimental = {per_monitor_dpi = false;};
-          fullscreen_pushback_everything = {fullscreen = "pushback";};
+          experimental = {
+            per_monitor_dpi = false;
+          };
+          fullscreen_pushback_everything = {
+            fullscreen = "pushback";
+          };
         }
         // optionalAttrs (active != null) {
-          urgency_low = let
-            inherit (config.modules.themes.colors.main.types) bg fg;
-          in {
-            foreground = "${fg}";
-            background = "${bg}";
-            timeout = 5;
-            #icon = /path/to/icon;
-          };
-          urgency_normal = let
-            inherit (config.modules.themes.colors.main.types) bg fg border;
-          in {
-            foreground = "${fg}";
-            background = "${bg}";
-            frame_color = "${border}";
-            timeout = 7;
-            #icon = /path/to/icon;
-          };
-          urgency_critical = let
-            inherit (config.modules.themes.colors.main.types) bg fg error;
-          in {
-            foreground = "${fg}";
-            background = "${bg}";
-            frame_color = "${error}";
-            timeout = 10;
-            #icon = /path/to/icon
-          };
+          urgency_low =
+            let
+              inherit (config.modules.themes.colors.main.types) bg fg;
+            in
+            {
+              foreground = "${fg}";
+              background = "${bg}";
+              timeout = 5;
+              #icon = /path/to/icon;
+            };
+          urgency_normal =
+            let
+              inherit (config.modules.themes.colors.main.types) bg fg border;
+            in
+            {
+              foreground = "${fg}";
+              background = "${bg}";
+              frame_color = "${border}";
+              timeout = 7;
+              #icon = /path/to/icon;
+            };
+          urgency_critical =
+            let
+              inherit (config.modules.themes.colors.main.types) bg fg error;
+            in
+            {
+              foreground = "${fg}";
+              background = "${bg}";
+              frame_color = "${error}";
+              timeout = 10;
+              #icon = /path/to/icon
+            };
         };
     };
   };

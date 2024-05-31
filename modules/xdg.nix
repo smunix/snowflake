@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   hm.xdg.enable = true;
 
   environment = {

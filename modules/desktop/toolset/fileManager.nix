@@ -4,23 +4,31 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
 
   cfg = config.modules.desktop.toolset.fileManager;
-in {
-  options.modules.desktop.toolset.fileManager = let
-    inherit (lib.options) mkEnableOption mkOption;
-    inherit (lib.types) nullOr enum;
-  in {
-    enable = mkEnableOption "A file-browser for our desktop";
-    program = mkOption {
-      type = nullOr (enum ["dolphin" "nautilus" "thunar"]);
-      default = "nautilus";
-      description = "which file-browser to install";
+in
+{
+  options.modules.desktop.toolset.fileManager =
+    let
+      inherit (lib.options) mkEnableOption mkOption;
+      inherit (lib.types) nullOr enum;
+    in
+    {
+      enable = mkEnableOption "A file-browser for our desktop";
+      program = mkOption {
+        type = nullOr (enum [
+          "dolphin"
+          "nautilus"
+          "thunar"
+        ]);
+        default = "nautilus";
+        description = "which file-browser to install";
+      };
     };
-  };
 
   config = mkMerge [
     {
@@ -29,23 +37,22 @@ in {
 
       services.gvfs.enable = true;
 
-      environment.systemPackages = attrValues ({}
-        // optionalAttrs (cfg.program == "dolphin") {
-          inherit (pkgs) dolphin dolphin-plugins;
-        }
+      environment.systemPackages = attrValues (
+        { }
+        // optionalAttrs (cfg.program == "dolphin") { inherit (pkgs) dolphin dolphin-plugins; }
         // optionalAttrs (cfg.program == "nautilus") {
           inherit (pkgs.gnome) nautilus;
           inherit (pkgs) nautilus-open-any-terminal;
         }
         // optionalAttrs (cfg.program == "thunar") {
-          inherit
-            (pkgs.xfce)
+          inherit (pkgs.xfce)
             thunar
             thunar-volman
             thunar-archive-plugin
             thunar-media-tags-plugin
             ;
-        });
+        }
+      );
     }
 
     (mkIf (cfg.program == "thunar") {

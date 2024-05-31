@@ -176,4 +176,4 @@ let
     gcb = "git checkout -b";
   };
 in
-  main // emacs // git
+main // emacs // git

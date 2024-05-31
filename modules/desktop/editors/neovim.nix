@@ -5,28 +5,35 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
 
   cfg = config.modules.desktop.editors.neovim;
-in {
-  options.modules.desktop.editors.neovim = let
-    inherit (lib.options) mkEnableOption mkOption mkPackageOption;
-    inherit (lib.types) enum nullOr;
-  in {
-    enable = mkEnableOption "Spread the joy of neovim in our flake";
-    package = mkPackageOption pkgs "neovim-nightly" {};
-    template = mkOption {
-      type = nullOr (enum ["agasaya" "ereshkigal"]);
-      default = "agasaya";
-      description = "Which Neovim configuration to setup.";
+in
+{
+  options.modules.desktop.editors.neovim =
+    let
+      inherit (lib.options) mkEnableOption mkOption mkPackageOption;
+      inherit (lib.types) enum nullOr;
+    in
+    {
+      enable = mkEnableOption "Spread the joy of neovim in our flake";
+      package = mkPackageOption pkgs "neovim-nightly" { };
+      template = mkOption {
+        type = nullOr (enum [
+          "agasaya"
+          "ereshkigal"
+        ]);
+        default = "agasaya";
+        description = "Which Neovim configuration to setup.";
+      };
     };
-  };
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.overlays = [inputs.nvim-nightly.overlay];
+      nixpkgs.overlays = [ inputs.nvim-nightly.overlay ];
 
       user.packages = attrValues (
         optionalAttrs (config.modules.develop.cc.enable == false) {

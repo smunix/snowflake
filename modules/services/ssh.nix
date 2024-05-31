@@ -3,13 +3,19 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   inherit (builtins) filter pathExists;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.services.ssh = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "secure-socket shell";};
+in
+{
+  options.modules.services.ssh =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "secure-socket shell";
+    };
 
   config = mkIf config.modules.services.ssh.enable {
     services.openssh = {
@@ -30,12 +36,12 @@ in {
     };
 
     user.openssh.authorizedKeys.keyFiles =
-      if config.user.name == "icy-thought"
-      then
+      if config.user.name == "icy-thought" then
         filter pathExists [
           "${config.user.home}/.ssh/id_ed25519.pub"
           "${config.user.home}/.ssh/id_rsa.pub"
         ]
-      else [];
+      else
+        [ ];
   };
 }

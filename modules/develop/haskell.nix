@@ -1,32 +1,53 @@
 {
   config,
   options,
+  inputs,
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
-in {
-  options.modules.develop.haskell = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "Haskell development";};
+in
+{
+  options.modules.develop.haskell =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "Haskell development";
+    };
 
   config = mkMerge [
     (mkIf config.modules.develop.haskell.enable {
-      user.packages = attrValues {
-        inherit
-          (pkgs.haskellPackages)
-          cabal-install
-          fourmolu
-          haskell-language-server
-          hasktags
-          hpack
-          ;
-        ghc-with-hoogle =
-          pkgs.haskellPackages.ghcWithHoogle
-          (p: with p; [taffybar xmonad xmonad-contrib]);
-      };
+      user.packages =
+        with inputs.nix-utils.lib;
+        with pkgs.haskell.lib;
+        let
+          hpkgs = fast (pkgs.haskell.packages.ghc98.override { inherit (inputs) all-cabal-hashes; }) [
+            {
+              modifiers = [ ];
+              extension = hf: hp: with hf; { };
+            }
+          ];
+        in
+        attrValues {
+          inherit (hpkgs)
+            cabal-install
+            fourmolu
+            haskell-language-server
+            hasktags
+            hpack
+            ;
+          ghc-with-hoogle = hpkgs.ghcWithHoogle (
+            p: with p; [
+              # taffybar
+              # xmonad
+              # xmonad-contrib
+            ]
+          );
+        };
 
       hm.programs.vscode.extensions = with pkgs.vscode-extensions; [
         haskell.haskell

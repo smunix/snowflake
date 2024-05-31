@@ -24,7 +24,7 @@ stdenv.mkDerivation {
   meta = with lib; {
     description = "Soothing pastel theme for Fcitx5";
     homepage = "https://github.com/catppuccin/fcitx5";
-    license = with licenses; [mit];
-    maintainers = [];
+    license = with licenses; [ mit ];
+    maintainers = [ ];
   };
 }

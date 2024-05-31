@@ -4,25 +4,32 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) toString;
   inherit (lib.attrsets) optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.strings) concatStringsSep;
 
   cfg = config.modules.desktop.toolset.docViewer;
-in {
-  options.modules.desktop.toolset.docViewer = let
-    inherit (lib.options) mkEnableOption mkOption;
-    inherit (lib.types) nullOr enum;
-  in {
-    enable = mkEnableOption "A document-viewer for our desktop";
-    program = mkOption {
-      type = nullOr (enum ["sioyek" "zathura"]);
-      default = "zathura";
-      description = "which document viewer to install";
+in
+{
+  options.modules.desktop.toolset.docViewer =
+    let
+      inherit (lib.options) mkEnableOption mkOption;
+      inherit (lib.types) nullOr enum;
+    in
+    {
+      enable = mkEnableOption "A document-viewer for our desktop";
+      program = mkOption {
+        type = nullOr (enum [
+          "sioyek"
+          "zathura"
+        ]);
+        default = "zathura";
+        description = "which document viewer to install";
+      };
     };
-  };
 
   config = mkMerge [
     {
@@ -33,10 +40,11 @@ in {
     (mkIf (cfg.program == "zathura") {
       hm.programs.zathura = {
         enable = true;
-        options = let
-          inherit (config.modules.themes) active;
-          inherit (config.modules.themes.colors.main) normal types;
-        in
+        options =
+          let
+            inherit (config.modules.themes) active;
+            inherit (config.modules.themes.colors.main) normal types;
+          in
           {
             adjust-open = "width";
             first-page-column = "1:1";
@@ -45,9 +53,11 @@ in {
             window-title-basename = true;
           }
           // optionalAttrs (active != null) {
-            font = let
-              inherit (config.modules.themes.font) mono sans;
-            in "${mono.family} Bold ${toString sans.size}";
+            font =
+              let
+                inherit (config.modules.themes.font) mono sans;
+              in
+              "${mono.family} Bold ${toString sans.size}";
             recolor = true;
             recolor-keephue = true;
             recolor-reverse-video = true;
@@ -92,8 +102,10 @@ in {
         config = {
           "check_for_updates_on_startup" = "0";
           "default_dark_mode" = "1";
-          "startup_commands" =
-            concatStringsSep ";" ["toggle_custom_color" "toggle_statusbar"];
+          "startup_commands" = concatStringsSep ";" [
+            "toggle_custom_color"
+            "toggle_statusbar"
+          ];
 
           "should_launch_new_instance" = "1";
           "sort_bookmarks_by_location" = "1";

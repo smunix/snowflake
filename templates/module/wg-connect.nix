@@ -4,27 +4,36 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.modules) mkIf mkForce;
-in {
-  options.modules.networking.wireguard.ghostVPN = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "ghostVPN conf. for wireguard";};
+in
+{
+  options.modules.networking.wireguard.ghostVPN =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "ghostVPN conf. for wireguard";
+    };
 
   # TODO: replace ghostVPN with desired module name!
   config = mkIf config.modules.networking.wireguard.ghostVPN.enable {
     modules.networking.wireguard.enable = true;
 
     systemd.services."wg-quick-ghostVPN" = {
-      requires = ["network-online.target"];
-      after = ["network.target" "network-online.target"];
-      wantedBy = mkForce [];
+      requires = [ "network-online.target" ];
+      after = [
+        "network.target"
+        "network-online.target"
+      ];
+      wantedBy = mkForce [ ];
       environment.DEVICE = "ghostVPN";
     };
 
     networking.wg-quick.interfaces.ghostVPN = {
-      address = [""];
-      dns = [];
+      address = [ "" ];
+      dns = [ ];
 
       listenPort = 51820;
 
@@ -33,7 +42,10 @@ in {
       peers = [
         {
           publicKey = "";
-          allowedIPs = ["0.0.0.0/0" "::/0"];
+          allowedIPs = [
+            "0.0.0.0/0"
+            "::/0"
+          ];
           endpoint = "";
           persistentKeepalive = 25;
         }

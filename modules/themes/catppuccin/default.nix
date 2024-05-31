@@ -4,14 +4,16 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) readFile toString;
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkDefault mkIf mkMerge;
   inherit (lib.strings) concatMapStringsSep;
 
   cfg = config.modules.themes;
-in {
+in
+{
   config = mkIf (cfg.active == "catppuccin") (mkMerge [
     {
       modules.themes = {
@@ -21,8 +23,8 @@ in {
           name = "Catppuccin-Mocha-Compact-Flamingo-Dark";
           package = pkgs.catppuccin-gtk.override {
             variant = "mocha";
-            accents = ["flamingo"];
-            tweaks = ["rimless"];
+            accents = [ "flamingo" ];
+            tweaks = [ "rimless" ];
             size = "compact";
           };
         };
@@ -41,13 +43,23 @@ in {
         fontConfig = {
           packages = attrValues {
             inherit (pkgs) noto-fonts-emoji sarasa-gothic;
-            google-fonts = pkgs.google-fonts.override {fonts = ["Bitter"];};
-            nerdfonts =
-              pkgs.nerdfonts.override {fonts = ["CascadiaCode" "VictorMono"];};
+            google-fonts = pkgs.google-fonts.override { fonts = [ "Bitter" ]; };
+            nerdfonts = pkgs.nerdfonts.override {
+              fonts = [
+                "CascadiaCode"
+                "VictorMono"
+              ];
+            };
           };
-          mono = ["VictorMono Nerd Font" "Sarasa Mono SC"];
-          sans = ["Caskaydia Cove Nerd Font" "Sarasa Gothic SC"];
-          emoji = ["Noto Color Emoji"];
+          mono = [
+            "VictorMono Nerd Font"
+            "Sarasa Mono SC"
+          ];
+          sans = [
+            "Caskaydia Cove Nerd Font"
+            "Sarasa Gothic SC"
+          ];
+          emoji = [ "Noto Color Emoji" ];
         };
 
         font = {
@@ -127,9 +139,10 @@ in {
     }
 
     (mkIf config.modules.desktop.browsers.firefox.enable {
-      modules.desktop.browsers.firefox.userChrome = let
-        usrChromeDir = "${config.snowflake.configDir}/firefox/userChrome";
-      in
+      modules.desktop.browsers.firefox.userChrome =
+        let
+          usrChromeDir = "${config.snowflake.configDir}/firefox/userChrome";
+        in
         concatMapStringsSep "\n" readFile [
           # "${usrChromeDir}/treestyle-tabs.css"
         ];
@@ -138,169 +151,186 @@ in {
     (mkIf config.services.xserver.enable {
       hm.programs.rofi = {
         extraConfig = {
-          icon-theme = let inherit (cfg.iconTheme) name; in "${name}";
-          font = let
-            inherit (cfg.font.sans) family weight size;
-          in "${family} ${weight} ${toString size}";
+          icon-theme =
+            let
+              inherit (cfg.iconTheme) name;
+            in
+            "${name}";
+          font =
+            let
+              inherit (cfg.font.sans) family weight size;
+            in
+            "${family} ${weight} ${toString size}";
         };
 
-        theme = let
-          inherit (config.hm.lib.formats.rasi) mkLiteral;
-          inherit (cfg.colors.rofi) bg fg ribbon selected transparent urgent;
-        in {
-          "*" = {
-            fg = mkLiteral "${fg}";
-            bg = mkLiteral "${bg.main}";
-            bg-alt = mkLiteral "${bg.alt}";
-            bg-bar = mkLiteral "${bg.bar}";
+        theme =
+          let
+            inherit (config.hm.lib.formats.rasi) mkLiteral;
+            inherit (cfg.colors.rofi)
+              bg
+              fg
+              ribbon
+              selected
+              transparent
+              urgent
+              ;
+          in
+          {
+            "*" = {
+              fg = mkLiteral "${fg}";
+              bg = mkLiteral "${bg.main}";
+              bg-alt = mkLiteral "${bg.alt}";
+              bg-bar = mkLiteral "${bg.bar}";
 
-            outer-ribbon = mkLiteral "${ribbon.outer}";
-            inner-ribbon = mkLiteral "${ribbon.inner}";
-            selected = mkLiteral "${selected}";
-            urgent = mkLiteral "${urgent}";
-            transparent = mkLiteral "${transparent}";
-          };
+              outer-ribbon = mkLiteral "${ribbon.outer}";
+              inner-ribbon = mkLiteral "${ribbon.inner}";
+              selected = mkLiteral "${selected}";
+              urgent = mkLiteral "${urgent}";
+              transparent = mkLiteral "${transparent}";
+            };
 
-          "window" = {
-            transparency = "real";
-            background-color = mkLiteral "@bg";
-            text-color = mkLiteral "@fg";
-            border = mkLiteral "0% 0% 0% 1.5%";
-            border-color = mkLiteral "@outer-ribbon";
-            border-radius = mkLiteral "0% 0% 0% 2.5%";
-            height = mkLiteral "54.50%";
-            width = mkLiteral "43%";
-            location = mkLiteral "center";
-            x-offset = 0;
-            y-offset = 0;
-          };
+            "window" = {
+              transparency = "real";
+              background-color = mkLiteral "@bg";
+              text-color = mkLiteral "@fg";
+              border = mkLiteral "0% 0% 0% 1.5%";
+              border-color = mkLiteral "@outer-ribbon";
+              border-radius = mkLiteral "0% 0% 0% 2.5%";
+              height = mkLiteral "54.50%";
+              width = mkLiteral "43%";
+              location = mkLiteral "center";
+              x-offset = 0;
+              y-offset = 0;
+            };
 
-          "prompt" = {
-            enabled = true;
-            padding = mkLiteral "0% 1% 0% 0%";
-            background-color = mkLiteral "@bg-bar";
-            text-color = mkLiteral "@fg";
-          };
+            "prompt" = {
+              enabled = true;
+              padding = mkLiteral "0% 1% 0% 0%";
+              background-color = mkLiteral "@bg-bar";
+              text-color = mkLiteral "@fg";
+            };
 
-          "entry" = {
-            background-color = mkLiteral "@bg-bar";
-            text-color = mkLiteral "@fg";
-            placeholder-color = mkLiteral "@fg";
-            expand = true;
-            horizontal-align = 0;
-            placeholder = "Search";
-            padding = mkLiteral "0.15% 0% 0% 0%";
-            blink = true;
-          };
+            "entry" = {
+              background-color = mkLiteral "@bg-bar";
+              text-color = mkLiteral "@fg";
+              placeholder-color = mkLiteral "@fg";
+              expand = true;
+              horizontal-align = 0;
+              placeholder = "Search";
+              padding = mkLiteral "0.15% 0% 0% 0%";
+              blink = true;
+            };
 
-          "inputbar" = {
-            children = mkLiteral "[ prompt, entry ]";
-            background-color = mkLiteral "@bg-bar";
-            text-color = mkLiteral "@fg";
-            expand = false;
-            border = mkLiteral "0% 0% 0.3% 0.2%";
-            border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
-            border-color = mkLiteral "@inner-ribbon";
-            margin = mkLiteral "0% 17% 0% 0%";
-            padding = mkLiteral "1%";
-            position = mkLiteral "center";
-          };
+            "inputbar" = {
+              children = mkLiteral "[ prompt, entry ]";
+              background-color = mkLiteral "@bg-bar";
+              text-color = mkLiteral "@fg";
+              expand = false;
+              border = mkLiteral "0% 0% 0.3% 0.2%";
+              border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
+              border-color = mkLiteral "@inner-ribbon";
+              margin = mkLiteral "0% 17% 0% 0%";
+              padding = mkLiteral "1%";
+              position = mkLiteral "center";
+            };
 
-          "listview" = {
-            background-color = mkLiteral "@bg";
-            columns = 5;
-            spacing = mkLiteral "1%";
-            cycle = false;
-            dynamic = true;
-            layout = mkLiteral "vertical";
-          };
+            "listview" = {
+              background-color = mkLiteral "@bg";
+              columns = 5;
+              spacing = mkLiteral "1%";
+              cycle = false;
+              dynamic = true;
+              layout = mkLiteral "vertical";
+            };
 
-          "mainbox" = {
-            background-color = mkLiteral "@bg";
-            border = mkLiteral "0% 0% 0% 1.5%";
-            border-radius = mkLiteral "0% 0% 0% 2.5%";
-            border-color = mkLiteral "@inner-ribbon";
-            children = mkLiteral "[ inputbar, listview ]";
-            spacing = mkLiteral "3%";
-            padding = mkLiteral "2.5% 2% 2.5% 2%";
-          };
+            "mainbox" = {
+              background-color = mkLiteral "@bg";
+              border = mkLiteral "0% 0% 0% 1.5%";
+              border-radius = mkLiteral "0% 0% 0% 2.5%";
+              border-color = mkLiteral "@inner-ribbon";
+              children = mkLiteral "[ inputbar, listview ]";
+              spacing = mkLiteral "3%";
+              padding = mkLiteral "2.5% 2% 2.5% 2%";
+            };
 
-          "element" = {
-            background-color = mkLiteral "@bg-bar";
-            text-color = mkLiteral "@fg";
-            orientation = mkLiteral "vertical";
-            border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
-            padding = mkLiteral "2% 0% 2% 0%";
-          };
+            "element" = {
+              background-color = mkLiteral "@bg-bar";
+              text-color = mkLiteral "@fg";
+              orientation = mkLiteral "vertical";
+              border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
+              padding = mkLiteral "2% 0% 2% 0%";
+            };
 
-          "element-icon" = {
-            background-color = mkLiteral "@transparent";
-            text-color = mkLiteral "inherit";
-            horizontal-align = "0.5";
-            vertical-align = "0.5";
-            size = mkLiteral "64px";
-            border = mkLiteral "0px";
-          };
+            "element-icon" = {
+              background-color = mkLiteral "@transparent";
+              text-color = mkLiteral "inherit";
+              horizontal-align = "0.5";
+              vertical-align = "0.5";
+              size = mkLiteral "64px";
+              border = mkLiteral "0px";
+            };
 
-          "element-text" = {
-            background-color = mkLiteral "@transparent";
-            text-color = mkLiteral "inherit";
-            expand = true;
-            horizontal-align = mkLiteral "0.5";
-            vertical-align = mkLiteral "0.5";
-            margin = mkLiteral "0.5% 1% 0% 1%";
-          };
+            "element-text" = {
+              background-color = mkLiteral "@transparent";
+              text-color = mkLiteral "inherit";
+              expand = true;
+              horizontal-align = mkLiteral "0.5";
+              vertical-align = mkLiteral "0.5";
+              margin = mkLiteral "0.5% 1% 0% 1%";
+            };
 
-          "element normal.urgent, element alternate.urgent" = {
-            background-color = mkLiteral "@urgent";
-            text-color = mkLiteral "@fg";
-            border-radius = mkLiteral "1%";
-          };
+            "element normal.urgent, element alternate.urgent" = {
+              background-color = mkLiteral "@urgent";
+              text-color = mkLiteral "@fg";
+              border-radius = mkLiteral "1%";
+            };
 
-          "element normal.active, element alternate.active" = {
-            background-color = mkLiteral "@bg-alt";
-            text-color = mkLiteral "@fg";
-          };
+            "element normal.active, element alternate.active" = {
+              background-color = mkLiteral "@bg-alt";
+              text-color = mkLiteral "@fg";
+            };
 
-          "element selected" = {
-            background-color = mkLiteral "@selected";
-            text-color = mkLiteral "@bg";
-            border = mkLiteral "0% 0% 0.3% 0.2%";
-            border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
-            border-color = mkLiteral "@inner-ribbon";
-          };
+            "element selected" = {
+              background-color = mkLiteral "@selected";
+              text-color = mkLiteral "@bg";
+              border = mkLiteral "0% 0% 0.3% 0.2%";
+              border-radius = mkLiteral "1.5% 1.0% 1.5% 1.5%";
+              border-color = mkLiteral "@inner-ribbon";
+            };
 
-          "element selected.urgent" = {
-            background-color = mkLiteral "@urgent";
-            text-color = mkLiteral "@fg";
-          };
+            "element selected.urgent" = {
+              background-color = mkLiteral "@urgent";
+              text-color = mkLiteral "@fg";
+            };
 
-          "element selected.active" = {
-            background-color = mkLiteral "@bg-alt";
-            color = mkLiteral "@fg";
+            "element selected.active" = {
+              background-color = mkLiteral "@bg-alt";
+              color = mkLiteral "@fg";
+            };
           };
+      };
+
+      hm.programs.sioyek.config =
+        let
+          inherit (cfg.font) mono sans;
+        in
+        {
+          "custom_background_color " = "0.12 0.11 0.18";
+          "custom_text_color " = "0.85 0.88 0.93";
+
+          "text_highlight_color" = "0.85 0.88 0.93";
+          "visual_mark_color" = "0.27 0.28 0.35 1.0";
+          "search_highlight_color" = "0.95 0.55 0.66";
+          "link_highlight_color" = "0.59 0.80 0.98";
+          "synctex_highlight_color" = "0.96 0.88 0.86";
+
+          "page_separator_width" = "2";
+          "page_separator_color" = "0.95 0.80 0.80";
+          "status_bar_color" = "0.19 0.20 0.27";
+
+          "font_size" = "${toString sans.size}";
+          "ui_font" = "${mono.family} ${mono.weight}";
         };
-      };
-
-      hm.programs.sioyek.config = let
-        inherit (cfg.font) mono sans;
-      in {
-        "custom_background_color " = "0.12 0.11 0.18";
-        "custom_text_color " = "0.85 0.88 0.93";
-
-        "text_highlight_color" = "0.85 0.88 0.93";
-        "visual_mark_color" = "0.27 0.28 0.35 1.0";
-        "search_highlight_color" = "0.95 0.55 0.66";
-        "link_highlight_color" = "0.59 0.80 0.98";
-        "synctex_highlight_color" = "0.96 0.88 0.86";
-
-        "page_separator_width" = "2";
-        "page_separator_color" = "0.95 0.80 0.80";
-        "status_bar_color" = "0.19 0.20 0.27";
-
-        "font_size" = "${toString sans.size}";
-        "ui_font" = "${mono.family} ${mono.weight}";
-      };
     })
   ]);
 }

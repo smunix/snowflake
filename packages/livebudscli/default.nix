@@ -21,9 +21,16 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-j9rVqGTUoqI7c+gypPuSiM/JqkQ7GMGPLVENi2ahk8g=";
 
-  nativeBuildInputs = [installShellFiles pkg-config];
+  nativeBuildInputs = [
+    installShellFiles
+    pkg-config
+  ];
 
-  buildInputs = [bluez dbus libpulseaudio];
+  buildInputs = [
+    bluez
+    dbus
+    libpulseaudio
+  ];
 
   postInstall = ''
     installShellCompletion --cmd earbuds \
@@ -36,6 +43,6 @@ rustPlatform.buildRustPackage rec {
     description = "A tool to control your Galaxy buds+, live and pro (beta) from linux";
     homepage = "https://github.com/JojiiOfficial/LiveBudsCli";
     license = licenses.gpl3Only;
-    maintainers = with maintainers; [Icy-Thought];
+    maintainers = with maintainers; [ Icy-Thought ];
   };
 }

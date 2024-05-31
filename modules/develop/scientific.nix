@@ -4,16 +4,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
-in {
-  options.modules.develop.scientific = let
-    inherit (lib.options) mkEnableOption;
-  in {
-    latex.enable = mkEnableOption "bloated doc/math lang";
-    typst.enable = mkEnableOption "modern LaTeX alt.";
-  };
+in
+{
+  options.modules.develop.scientific =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      latex.enable = mkEnableOption "bloated doc/math lang";
+      typst.enable = mkEnableOption "modern LaTeX alt.";
+    };
 
   config = mkMerge [
     (mkIf config.modules.develop.scientific.latex.enable {
@@ -21,8 +25,7 @@ in {
         inherit (pkgs) texlab;
         tex = pkgs.texlive.combine {
           # :FIXME| completely replace with typst
-          inherit
-            (pkgs.texlive)
+          inherit (pkgs.texlive)
             scheme-basic
             capt-of
             dvipng
@@ -36,12 +39,12 @@ in {
             greek-inputenc
             trimspaces
             # :NOTE| Mathematics-related
-            
+
             amsmath
             cancel
             mathtools
             # :NOTE| Graphics-related
-            
+
             parskip
             pgf
             pgfplots
@@ -59,13 +62,9 @@ in {
     })
 
     (mkIf config.modules.develop.scientific.typst.enable {
-      user.packages = attrValues {
-        inherit (pkgs) typst typst-lsp typstfmt;
-      };
+      user.packages = attrValues { inherit (pkgs) typst typst-lsp typstfmt; };
 
-      hm.programs.vscode.extensions = attrValues {
-        inherit (pkgs.vscode-extensions.nvarner) typst-lsp;
-      };
+      hm.programs.vscode.extensions = attrValues { inherit (pkgs.vscode-extensions.nvarner) typst-lsp; };
     })
 
     (mkIf config.modules.develop.xdg.enable {

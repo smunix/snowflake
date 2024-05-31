@@ -4,12 +4,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.modules) mkIf;
-in {
-  options.modules.shell.bash = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "bash shell" // {default = true;};};
+in
+{
+  options.modules.shell.bash =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "bash shell" // {
+        default = true;
+      };
+    };
 
   config = mkIf config.modules.shell.bash.enable {
     # Enable starship-rs + ZSH integration
@@ -20,7 +28,12 @@ in {
       enable = true;
       historySize = 5000;
       historyFileSize = 5000;
-      historyIgnore = ["btm" "htop" "macchina" "neofetch"];
+      historyIgnore = [
+        "btm"
+        "htop"
+        "macchina"
+        "neofetch"
+      ];
       shellAliases = {
         ls = "lsd -Sl";
         lsa = "lsd -Sla";

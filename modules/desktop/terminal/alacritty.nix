@@ -4,16 +4,22 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) toString;
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf mkMerge;
 
   active = config.modules.themes.active;
-in {
-  options.modules.desktop.terminal.alacritty = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "OpenGL terminal emulator";};
+in
+{
+  options.modules.desktop.terminal.alacritty =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "OpenGL terminal emulator";
+    };
 
   config = mkIf config.modules.desktop.terminal.alacritty.enable {
     modules.shell.toolset.tmux.enable = true;
@@ -63,7 +69,11 @@ in {
 
           shell = {
             program = "${getExe pkgs.fish}";
-            args = ["-l" "-c" "tmux new || tmux"];
+            args = [
+              "-l"
+              "-c"
+              "tmux new || tmux"
+            ];
           };
 
           cursor = {
@@ -129,20 +139,19 @@ in {
           };
         }
 
-        (mkIf (active != null) {
-          import = ["~/.config/alacritty/config/${active}.toml"];
-        })
+        (mkIf (active != null) { import = [ "~/.config/alacritty/config/${active}.toml" ]; })
       ];
     };
 
     home.configFile = mkIf (active != null) {
       alacritty-conf = {
         target = "alacritty/config/${active}.toml";
-        source = let
-          inherit (config.modules.themes.font) mono sans;
-          inherit (config.modules.themes.colors.main) bright normal types;
-          tomlFormat = pkgs.formats.toml {};
-        in
+        source =
+          let
+            inherit (config.modules.themes.font) mono sans;
+            inherit (config.modules.themes.colors.main) bright normal types;
+            tomlFormat = pkgs.formats.toml { };
+          in
           tomlFormat.generate "alacritty-theme" {
             font = {
               builtin_box_drawing = true;

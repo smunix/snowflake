@@ -5,32 +5,51 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) toJSON;
   inherit (lib.attrsets) attrValues mapAttrsToList;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.strings) concatStrings;
 
   cfg = config.modules.desktop.browsers.firefox;
-in {
-  options.modules.desktop.browsers.firefox = let
-    inherit (lib.options) mkEnableOption;
-    inherit (lib.types) attrsOf oneOf bool int lines str;
-    inherit (lib.my) mkOpt mkOpt';
-  in {
-    enable = mkEnableOption "Gecko-based libre browser";
-    privacy.enable = mkEnableOption "Privacy Focused Firefox fork";
+in
+{
+  options.modules.desktop.browsers.firefox =
+    let
+      inherit (lib.options) mkEnableOption;
+      inherit (lib.types)
+        attrsOf
+        oneOf
+        bool
+        int
+        lines
+        str
+        ;
+      inherit (lib.my) mkOpt mkOpt';
+    in
+    {
+      enable = mkEnableOption "Gecko-based libre browser";
+      privacy.enable = mkEnableOption "Privacy Focused Firefox fork";
 
-    profileName = mkOpt str config.user.name;
-    settings = mkOpt' (attrsOf (oneOf [bool int str])) {} ''
-      Firefox preferences set in <filename>user.js</filename>
-    '';
-    extraConfig = mkOpt' lines "" ''
-      Extra lines to add to <filename>user.js</filename>
-    '';
-    userChrome = mkOpt' lines "" "CSS Styles for Firefox's interface";
-    userContent = mkOpt' lines "" "Global CSS Styles for websites";
-  };
+      profileName = mkOpt str config.user.name;
+      settings =
+        mkOpt'
+          (attrsOf (oneOf [
+            bool
+            int
+            str
+          ]))
+          { }
+          ''
+            Firefox preferences set in <filename>user.js</filename>
+          '';
+      extraConfig = mkOpt' lines "" ''
+        Extra lines to add to <filename>user.js</filename>
+      '';
+      userChrome = mkOpt' lines "" "CSS Styles for Firefox's interface";
+      userContent = mkOpt' lines "" "Global CSS Styles for websites";
+    };
 
   config = mkMerge [
     (mkIf (config.modules.desktop.envProto == "wayland") {
@@ -38,20 +57,25 @@ in {
     })
 
     (mkIf cfg.enable {
-      user.packages = let
-        inherit (pkgs) makeDesktopItem;
-        inherit (inputs.firefox.packages.${pkgs.system}) firefox-nightly-bin;
-      in [
-        firefox-nightly-bin
-        (makeDesktopItem {
-          name = "firefox-nightly-private";
-          desktopName = "Firefox Nightly (Private)";
-          genericName = "Launch a private Firefox Nightly instance";
-          icon = "firefox-nightly";
-          exec = "${pkgs.firefox-bin}/bin/firefox-nightly --private-window";
-          categories = ["Network" "WebBrowser"];
-        })
-      ];
+      user.packages =
+        let
+          inherit (pkgs) makeDesktopItem;
+          inherit (inputs.firefox.packages.${pkgs.system}) firefox-nightly-bin;
+        in
+        [
+          firefox-nightly-bin
+          (makeDesktopItem {
+            name = "firefox-nightly-private";
+            desktopName = "Firefox Nightly (Private)";
+            genericName = "Launch a private Firefox Nightly instance";
+            icon = "firefox-nightly";
+            exec = "${pkgs.firefox-bin}/bin/firefox-nightly --private-window";
+            categories = [
+              "Network"
+              "WebBrowser"
+            ];
+          })
+        ];
 
       # Prevent auto-creation of ~/Desktop. The trailing slash is necessary.
       # See: https://bugzilla.mozilla.org/show_bug.cgi?id=1082717
@@ -128,10 +152,8 @@ in {
         "geo.provider.use_gpsd" = false;
         # https://support.mozilla.org/en-US/kb/extension-recommendations
         "browser.newtabpage.activity-stream.asrouter.userprefs.cfr" = false;
-        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" =
-          false;
-        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" =
-          false;
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" = false;
         "extensions.htmlaboutaddons.recommendations.enabled" = false;
         "extensions.htmlaboutaddons.discover.enabled" = false;
         "extensions.getAddons.showPane" = false; # Uses Google Analytics
@@ -184,51 +206,50 @@ in {
       };
 
       # Use a stable profile name so we can target it in themes
-      home.file = let
-        cfgPath = ".mozilla/firefox";
-      in {
-        firefox-profiles = {
-          target = "${cfgPath}/profiles.ini";
-          text = ''
-            [Profile0]
-            Name=default
-            IsRelative=1
-            Path=${cfg.profileName}.default
-            Default=1
+      home.file =
+        let
+          cfgPath = ".mozilla/firefox";
+        in
+        {
+          firefox-profiles = {
+            target = "${cfgPath}/profiles.ini";
+            text = ''
+              [Profile0]
+              Name=default
+              IsRelative=1
+              Path=${cfg.profileName}.default
+              Default=1
 
-            [General]
-            StartWithLastProfile=1
-            Version=2
-          '';
-        };
+              [General]
+              StartWithLastProfile=1
+              Version=2
+            '';
+          };
 
-        user-js = mkIf (cfg.settings != {} || cfg.extraConfig != "") {
-          target = "${cfgPath}/${cfg.profileName}.default/user.js";
-          text = ''
-            ${concatStrings (mapAttrsToList (name: value: ''
-                user_pref("${name}", ${toJSON value});
-              '')
-              cfg.settings)}
-            ${cfg.extraConfig}
-          '';
-        };
+          user-js = mkIf (cfg.settings != { } || cfg.extraConfig != "") {
+            target = "${cfgPath}/${cfg.profileName}.default/user.js";
+            text = ''
+              ${concatStrings (
+                mapAttrsToList (name: value: ''
+                  user_pref("${name}", ${toJSON value});
+                '') cfg.settings
+              )}
+              ${cfg.extraConfig}
+            '';
+          };
 
-        user-chome = mkIf (cfg.userChrome != "") {
-          target = "${cfgPath}/${cfg.profileName}.default/chrome/userChrome.css";
-          text = cfg.userChrome;
-        };
+          user-chome = mkIf (cfg.userChrome != "") {
+            target = "${cfgPath}/${cfg.profileName}.default/chrome/userChrome.css";
+            text = cfg.userChrome;
+          };
 
-        user-content = mkIf (cfg.userContent != "") {
-          target = "${cfgPath}/${cfg.profileName}.default/chrome/userContent.css";
-          text = cfg.userContent;
+          user-content = mkIf (cfg.userContent != "") {
+            target = "${cfgPath}/${cfg.profileName}.default/chrome/userContent.css";
+            text = cfg.userContent;
+          };
         };
-      };
     })
 
-    (mkIf cfg.privacy.enable {
-      user.packages = attrValues {
-        inherit (pkgs) librewolf;
-      };
-    })
+    (mkIf cfg.privacy.enable { user.packages = attrValues { inherit (pkgs) librewolf; }; })
   ];
 }

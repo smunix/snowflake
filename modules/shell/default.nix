@@ -4,26 +4,35 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   cfg = config.modules.shell;
-in {
-  options.modules.shell = let
-    inherit (lib.options) mkOption mkEnableOption;
-    inherit (lib.types) nullOr enum;
-  in {
-    default = mkOption {
-      type = nullOr (enum ["fish" "zsh" "xonsh"]);
-      default = null;
-      description = "Default system shell";
+in
+{
+  options.modules.shell =
+    let
+      inherit (lib.options) mkOption mkEnableOption;
+      inherit (lib.types) nullOr enum;
+    in
+    {
+      default = mkOption {
+        type = nullOr (enum [
+          "fish"
+          "zsh"
+          "xonsh"
+        ]);
+        default = null;
+        description = "Default system shell";
+      };
+      corePkgs.enable = mkEnableOption "core shell packages";
     };
-    corePkgs.enable = mkEnableOption "core shell packages";
-  };
 
   config = mkMerge [
     (mkIf (cfg.default != null) {
-      users.defaultUserShell = pkgs."${cfg.default}";
+      users.defaultUserShell =
+        if cfg.default == "zsh" then "${pkgs.nushell}/bin/nu" else pkgs."${cfg.default}";
     })
 
     (mkIf cfg.corePkgs.enable {
@@ -36,15 +45,29 @@ in {
       hm.programs.direnv = {
         enable = true;
         nix-direnv.enable = true;
-        config.whitelist.prefix = ["/home"];
+        config.whitelist.prefix = [ "/home" ];
+      };
+
+      programs.nh = {
+        enable = true;
+        clean.enable = true;
+        clean.extraArgs = "--keep-since 7d --keep 3";
+        flake = "/home/smunix/Workspace/public/snowflake";
       };
 
       user.packages = attrValues {
-        inherit (pkgs) any-nix-shell pwgen yt-dlp ripdrag yazi;
+        inherit (pkgs)
+          any-nix-shell
+          hecate
+          pwgen
+          yt-dlp
+          ripdrag
+          yazi
+          ;
 
         # GNU Alternatives
         inherit (pkgs) bat fd zoxide;
-        rgFull = pkgs.ripgrep.override {withPCRE2 = true;};
+        rgFull = pkgs.ripgrep.override { withPCRE2 = true; };
       };
     })
   ];

@@ -5,14 +5,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) readFile toPath;
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.desktop.hyprland = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "hyped wayland WM";};
+in
+{
+  options.modules.desktop.hyprland =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "hyped wayland WM";
+    };
 
   config = mkIf config.modules.desktop.hyprland.enable {
     modules.desktop = {
@@ -40,7 +46,13 @@ in {
     modules.hardware.kmonad.enable = true;
 
     environment.systemPackages = attrValues {
-      inherit (pkgs) imv libnotify playerctl wf-recorder wlr-randr;
+      inherit (pkgs)
+        imv
+        libnotify
+        playerctl
+        wf-recorder
+        wlr-randr
+        ;
     };
 
     services.greetd.settings.initial_session = {
@@ -48,20 +60,22 @@ in {
       user = "${config.user.name}";
     };
 
-    hm.imports = let
-      inherit (inputs) hyprland;
-    in [hyprland.homeManagerModules.default];
+    hm.imports =
+      let
+        inherit (inputs) hyprland;
+      in
+      [ hyprland.homeManagerModules.default ];
 
     hm.wayland.windowManager.hyprland = {
       enable = true;
-      extraConfig =
-        readFile "${config.snowflake.configDir}/hyprland/hyprland.conf";
+      extraConfig = readFile "${config.snowflake.configDir}/hyprland/hyprland.conf";
     };
 
     # System wallpaper:
-    home.configFile.hypr-wallpaper = let
-      inherit (config.modules.themes) wallpaper;
-    in
+    home.configFile.hypr-wallpaper =
+      let
+        inherit (config.modules.themes) wallpaper;
+      in
       mkIf (wallpaper != null) {
         target = "hypr/hyprpaper.conf";
         text = ''

@@ -4,23 +4,29 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) readFile;
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.shell.toolset.git = let
-    inherit (lib.options) mkEnableOption;
-  in {enable = mkEnableOption "version-control system";};
+in
+{
+  options.modules.shell.toolset.git =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "version-control system";
+    };
 
   config = mkIf config.modules.shell.toolset.git.enable {
-    user.packages = attrValues ({
+    user.packages = attrValues (
+      {
         inherit (pkgs) act dura gitui;
         inherit (pkgs.gitAndTools) gh git-open;
       }
-      // optionalAttrs config.modules.shell.toolset.gnupg.enable {
-        inherit (pkgs.gitAndTools) git-crypt;
-      });
+      // optionalAttrs config.modules.shell.toolset.gnupg.enable { inherit (pkgs.gitAndTools) git-crypt; }
+    );
 
     # Prevent x11 askPass prompt on git push:
     programs.ssh.askPassword = "";
@@ -36,7 +42,9 @@ in {
       gitignore = "curl -sL https://www.gitignore.io/api/$argv";
     };
 
-    env = {GITHUB_TOKEN = "$(cat /run/agenix/tokenGH)";};
+    env = {
+      GITHUB_TOKEN = "$(cat /run/agenix/tokenGH)";
+    };
 
     hm.programs.git = {
       enable = true;
@@ -61,7 +69,11 @@ in {
         '';
       };
 
-      attributes = ["*.lisp diff=lisp" "*.el diff=lisp" "*.org diff=org"];
+      attributes = [
+        "*.lisp diff=lisp"
+        "*.el diff=lisp"
+        "*.org diff=org"
+      ];
 
       ignores = [
         # General:

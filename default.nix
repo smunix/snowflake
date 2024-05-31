@@ -4,18 +4,27 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) toString;
-  inherit (lib.attrsets) attrValues filterAttrs mapAttrs mapAttrsToList;
+  inherit (lib.attrsets)
+    attrValues
+    filterAttrs
+    mapAttrs
+    mapAttrsToList
+    ;
   inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
   inherit (lib.my) mapModulesRec';
-in {
-  imports =
-    [
-      inputs.home-manager.nixosModules.home-manager
-      (mkAliasOptionModule ["hm"] ["home-manager" "users" config.user.name])
-    ]
-    ++ (mapModulesRec' (toString ./modules) import);
+in
+{
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    (mkAliasOptionModule [ "hm" ] [
+      "home-manager"
+      "users"
+      config.user.name
+    ])
+  ] ++ (mapModulesRec' (toString ./modules) import);
 
   # Common config for all nixos machines;
   environment.variables = {
@@ -24,35 +33,40 @@ in {
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
-  nix = let
-    filteredInputs = filterAttrs (n: _: n != "self") inputs;
-    nixPathInputs = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
-    registryInputs = mapAttrs (_: v: {flake = v;}) filteredInputs;
-  in {
-    package = pkgs.nixVersions.stable;
-    extraOptions = "experimental-features = nix-command flakes";
+  nix =
+    let
+      filteredInputs = filterAttrs (n: _: n != "self") inputs;
+      nixPathInputs = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
+      registryInputs = mapAttrs (_: v: { flake = v; }) filteredInputs;
+    in
+    {
+      package = pkgs.nixVersions.stable;
+      extraOptions = "experimental-features = nix-command flakes";
 
-    nixPath =
-      nixPathInputs
-      ++ [
+      nixPath = nixPathInputs ++ [
         "nixpkgs-overlays=${config.snowflake.dir}/overlays"
         "snowflake=${config.snowflake.dir}"
       ];
 
-    registry = registryInputs // {snowflake.flake = inputs.self;};
+      registry = registryInputs // {
+        snowflake.flake = inputs.self;
+      };
 
-    settings = {
-      auto-optimise-store = true;
-      substituters = ["https://nix-community.cachix.org" "https://hyprland.cachix.org"];
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
+      settings = {
+        auto-optimise-store = true;
+        substituters = [
+          "https://nix-community.cachix.org"
+          "https://hyprland.cachix.org"
+        ];
+        trusted-public-keys = [
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        ];
+      };
     };
-  };
 
   system = {
-    stateVersion = "23.11";
+    stateVersion = "24.05";
     configurationRevision = with inputs; mkIf (self ? rev) self.rev;
   };
 
@@ -63,7 +77,7 @@ in {
 
   boot = {
     kernelPackages = mkDefault pkgs.linuxPackages_latest;
-    kernelParams = ["pcie_aspm.policy=performance"];
+    kernelParams = [ "pcie_aspm.policy=performance" ];
     loader = {
       efi.efiSysMountPoint = "/boot";
       efi.canTouchEfiVariables = mkDefault true;
@@ -81,14 +95,31 @@ in {
     useXkbConfig = mkDefault true;
   };
 
-  time.timeZone = mkDefault "Europe/Stockholm";
+  time.timeZone = mkDefault "America/New_York";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
 
   i18n.defaultLocale = mkDefault "en_US.UTF-8";
 
   # WARNING: prevent installing pre-defined packages
-  environment.defaultPackages = [];
+  environment.defaultPackages = [ ];
 
   environment.systemPackages = attrValues {
-    inherit (pkgs) cached-nix-shell gnumake unrar unzip;
+    inherit (pkgs)
+      cached-nix-shell
+      gnumake
+      unrar
+      unzip
+      ;
   };
 }

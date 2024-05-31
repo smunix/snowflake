@@ -4,24 +4,31 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) isAttrs;
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.my) anyAttrs countAttrs value;
 
   cfg = config.modules.desktop;
-in {
-  options.modules.desktop = let
-    inherit (lib.options) mkOption;
-    inherit (lib.types) nullOr enum;
-  in {
-    envProto = mkOption {
-      type = nullOr (enum ["x11" "wayland"]);
-      description = "What display protocol to use.";
-      default = null;
+in
+{
+  options.modules.desktop =
+    let
+      inherit (lib.options) mkOption;
+      inherit (lib.types) nullOr enum;
+    in
+    {
+      envProto = mkOption {
+        type = nullOr (enum [
+          "x11"
+          "wayland"
+        ]);
+        description = "What display protocol to use.";
+        default = null;
+      };
     };
-  };
 
   config = mkMerge [
     {
@@ -31,20 +38,19 @@ in {
           message = "Prevent DE/WM > 1 from being enabled.";
         }
         {
-          assertion = let
-            srv = config.services;
-          in
+          assertion =
+            let
+              srv = config.services;
+            in
             srv.xserver.enable
             || srv.sway.enable
-            || !(anyAttrs
-              (n: v: isAttrs v && anyAttrs (n: v: isAttrs v && v.enable))
-              cfg);
+            || !(anyAttrs (n: v: isAttrs v && anyAttrs (n: v: isAttrs v && v.enable)) cfg);
           message = "Prevent desktop applications from enabling without a DE/WM.";
         }
       ];
 
       env = {
-        GTK_DATA_PREFIX = ["${config.system.path}"];
+        GTK_DATA_PREFIX = [ "${config.system.path}" ];
         QT_QPA_PLATFORMTHEME = "gnome";
         QT_STYLE_OVERRIDE = "Adwaita";
       };
@@ -57,8 +63,7 @@ in {
       '';
 
       user.packages = attrValues {
-        inherit
-          (pkgs)
+        inherit (pkgs)
           nvfetcher
           clipboard-jh
           gucharmap
@@ -72,23 +77,25 @@ in {
           desktopName = "Kalker";
           icon = "calc";
           exec = "${config.modules.desktop.terminal.default} start kalker";
-          categories = ["Education" "Science" "Math"];
+          categories = [
+            "Education"
+            "Science"
+            "Math"
+          ];
         };
       };
 
       fonts = {
         fontDir.enable = true;
         enableGhostscriptFonts = true;
-        packages = attrValues {
-          inherit (pkgs) sarasa-gothic scheherazade-new;
-        };
+        packages = attrValues { inherit (pkgs) sarasa-gothic scheherazade-new; };
       };
 
       services.xserver.enable = true;
 
       xdg.portal = {
         enable = true;
-        extraPortals = [pkgs.xdg-desktop-portal-gtk];
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
         config.common.default = "*";
       };
       services.gnome.gnome-keyring.enable = true;

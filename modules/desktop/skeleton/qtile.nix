@@ -5,22 +5,29 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf;
 
   cfg = config.modules.desktop.qtile;
-in {
-  options.modules.desktop.qtile = let
-    inherit (lib.options) mkEnableOption mkOption;
-    inherit (lib.types) enum;
-  in {
-    enable = mkEnableOption "python x11/wayland WM";
-    backend = mkOption {
-      type = enum ["x11" "wayland"];
-      default = "x11";
+in
+{
+  options.modules.desktop.qtile =
+    let
+      inherit (lib.options) mkEnableOption mkOption;
+      inherit (lib.types) enum;
+    in
+    {
+      enable = mkEnableOption "python x11/wayland WM";
+      backend = mkOption {
+        type = enum [
+          "x11"
+          "wayland"
+        ];
+        default = "x11";
+      };
     };
-  };
 
   config = mkIf cfg.enable {
     modules.desktop = {
@@ -51,15 +58,13 @@ in {
       user = "${config.user.name}";
     };
 
-    environment.systemPackages = attrValues ({
+    environment.systemPackages = attrValues (
+      {
         inherit (pkgs) libnotify playerctl gxmessage;
       }
-      // optionalAttrs (cfg.backend == "x11") {
-        inherit (pkgs) xdotool feh;
-      }
-      // optionalAttrs (cfg.backend == "wayland") {
-        inherit (pkgs) imv wf-recorder;
-      });
+      // optionalAttrs (cfg.backend == "x11") { inherit (pkgs) xdotool feh; }
+      // optionalAttrs (cfg.backend == "wayland") { inherit (pkgs) imv wf-recorder; }
+    );
 
     services.xserver = {
       displayManager.defaultSession = "none+qtile";

@@ -4,13 +4,15 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) mapAttrsToList;
   inherit (lib.modules) mkIf;
   inherit (lib.strings) concatStrings escapeNixString;
 
   cfg = config.modules.shell;
-in {
+in
+{
   config = mkIf (cfg.default == "zsh") {
     modules.shell = {
       corePkgs.enable = true;
@@ -23,9 +25,19 @@ in {
     hm.programs.starship.enableZshIntegration = true;
 
     # Enable completion for sys-packages:
-    environment.pathsToLink = ["/share/zsh"];
+    environment.pathsToLink = [ "/share/zsh" ];
 
     programs.zsh.enable = true;
+
+    hm.programs.nushell.enable = true;
+    hm.programs.starship.enableNushellIntegration = true;
+
+    hm.programs.zellij = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    environment.variables.SHELL = "${pkgs.nushell}/bin/nu";
 
     hm.programs.zsh = {
       enable = true;
@@ -137,33 +149,46 @@ in {
         less = "less -R";
       };
 
-      plugins = let
-        mkZshPlugin = {
-          pkg,
-          file ? "${pkg.pname}.plugin.zsh",
-        }: {
-          name = pkg.pname;
-          src = pkg.src;
-          inherit file;
-        };
-      in
-        with pkgs; [
-          (mkZshPlugin {pkg = zsh-abbr;})
-          (mkZshPlugin {pkg = zsh-autopair;})
-          (mkZshPlugin {pkg = zsh-you-should-use;})
+      plugins =
+        let
+          mkZshPlugin =
+            {
+              pkg,
+              file ? "${pkg.pname}.plugin.zsh",
+            }:
+            {
+              name = pkg.pname;
+              src = pkg.src;
+              inherit file;
+            };
+        in
+        with pkgs;
+        [
+          (mkZshPlugin { pkg = zsh-abbr; })
+          (mkZshPlugin { pkg = zsh-autopair; })
+          (mkZshPlugin { pkg = zsh-you-should-use; })
           (mkZshPlugin {
             pkg = zsh-nix-shell;
             file = "nix-shell.plugin.zsh";
           })
         ];
 
-      syntaxHighlighting = let
-        inherit (config.modules.themes) active;
-        inherit (config.modules.themes.colors.main) normal bright types;
-      in
+      syntaxHighlighting =
+        let
+          inherit (config.modules.themes) active;
+          inherit (config.modules.themes.colors.main) normal bright types;
+        in
         mkIf (active != null) {
           enable = true;
-          highlighters = ["main" "brackets" "pattern" "cursor" "regexp" "root" "line"];
+          highlighters = [
+            "main"
+            "brackets"
+            "pattern"
+            "cursor"
+            "regexp"
+            "root"
+            "line"
+          ];
           patterns = {
             "sudo " = "fg=${normal.red},bold";
             "rm -rf *" = "fg=${normal.red},bold";
@@ -234,14 +259,17 @@ in {
 
     home.configFile.zsh-abbreviations = {
       target = "zsh/abbreviations";
-      text = let
-        abbrevs = import "${config.snowflake.configDir}/shell-abbr";
-      in ''
-        ${concatStrings (mapAttrsToList (k: v: ''
-            abbr ${k}=${escapeNixString v}
-          '')
-          abbrevs)}
-      '';
+      text =
+        let
+          abbrevs = import "${config.snowflake.configDir}/shell-abbr";
+        in
+        ''
+          ${concatStrings (
+            mapAttrsToList (k: v: ''
+              abbr ${k}=${escapeNixString v}
+            '') abbrevs
+          )}
+        '';
     };
   };
 }

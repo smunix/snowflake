@@ -3,8 +3,9 @@
   config,
   lib,
   ...
-}: {
-  imports = [./hardware.nix];
+}:
+{
+  imports = [ ./hardware.nix ];
 
   modules = {
     shell = {

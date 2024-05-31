@@ -1,4 +1,5 @@
-{...}: [
+{ ... }:
+[
   {
     command = "markdown.showPreview";
     key = "ctrl+shift+m";

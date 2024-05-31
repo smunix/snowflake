@@ -4,13 +4,15 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption;
 
   cfg = config.modules.desktop.extensions.waybar;
-in {
+in
+{
   options.modules.desktop.extensions.waybar = {
     enable = mkEnableOption "status-bar for wayland";
   };
@@ -23,7 +25,7 @@ in {
     hm.systemd.user.services.waybar = {
       Unit = {
         Description = "A bar for your wayland environment";
-        PartOf = ["tray.target"];
+        PartOf = [ "tray.target" ];
       };
       Service = {
         Type = "dbus";
@@ -31,7 +33,9 @@ in {
         ExecStart = "${getExe pkgs.waybar}";
         Restart = "on-failure";
       };
-      Install = {WantedBy = ["tray.target"];};
+      Install = {
+        WantedBy = [ "tray.target" ];
+      };
     };
 
     hm.programs.waybar = {
@@ -47,8 +51,15 @@ in {
             "idle_inhibitor"
             "mpd"
           ];
-          modules-center = ["clock"];
-          modules-right = ["memory" "cpu" "network" "battery" "custom/powermenu" "tray"];
+          modules-center = [ "clock" ];
+          modules-right = [
+            "memory"
+            "cpu"
+            "network"
+            "battery"
+            "custom/powermenu"
+            "tray"
+          ];
           "custom/launcher" = {
             "format" = "  NixOS";
             "on-click" = "rofi -no-lazy-grab -show drun -modi drun";
@@ -76,7 +87,17 @@ in {
               "critical" = 10;
             };
             "format" = "{icon} {capacity}%";
-            "format-icons" = ["" "" "" "" "" "" "" "" ""];
+            "format-icons" = [
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+            ];
             "format-full" = "{icon} {capacity}%";
             "format-charging" = " {capacity}%";
             "tooltip" = false;
@@ -97,7 +118,9 @@ in {
           "memory" = {
             "interval" = 1;
             "format" = "﬙ {percentage}%";
-            "states" = {"warning" = 85;};
+            "states" = {
+              "warning" = 85;
+            };
           };
           "cpu" = {
             "interval" = 1;
