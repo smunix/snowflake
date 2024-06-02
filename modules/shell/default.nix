@@ -51,17 +51,21 @@ in
       programs.nh = {
         enable = true;
         clean.enable = true;
-        clean.extraArgs = "--keep-since 7d --keep 3";
+        clean.extraArgs = "--keep-since 14d --keep 3";
         flake = "/home/smunix/Workspace/public/snowflake";
       };
 
       user.packages = attrValues {
         inherit (pkgs)
+          ack
           any-nix-shell
+          dtrx
           hecate
           pwgen
-          yt-dlp
           ripdrag
+          ripgrep
+          rsync
+          yt-dlp
           yazi
           ;
 

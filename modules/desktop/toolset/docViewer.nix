@@ -23,6 +23,7 @@ in
       enable = mkEnableOption "A document-viewer for our desktop";
       program = mkOption {
         type = nullOr (enum [
+          "evince"
           "sioyek"
           "zathura"
         ]);
@@ -31,11 +32,16 @@ in
       };
     };
 
-  config = mkMerge [
+  config = mkIf cfg.enable (mkMerge [
     {
       # :NOTE| Notify system about our document viewer
       modules.desktop.extensions.mimeApps.defApps.docViewer = cfg.program;
+      user.packages = with pkgs; [ texliveConTeXt ];
     }
+
+    (mkIf (cfg.program == "evince") {
+      user.packages = [ pkgs.evince ];
+    })
 
     (mkIf (cfg.program == "zathura") {
       hm.programs.zathura = {
@@ -160,5 +166,5 @@ in
         };
       };
     })
-  ];
+  ]);
 }

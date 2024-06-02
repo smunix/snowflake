@@ -121,13 +121,13 @@ in
         credential.helper = "${pkgs.gitFull}/bin/git-credential-libsecret";
 
         user = {
-          name = "Icy-Thought";
-          email = "icy-thought@pm.me";
+          name = "Providence Salumu";
+          email = "Providence.Salumu@smunix.com";
           signingKey = readFile "${config.user.home}/.ssh/id_ed25519.pub";
         };
 
         alias = {
-          commit-x = "-c user.name='CircuitLogic' -c user.email='geckut@pm.me' commit";
+          commit-x = "-c user.name='Providence Salumu' -c user.email='Providence.Salumu@smunix.com' commit";
         };
 
         gpg.format = "ssh";
@@ -152,6 +152,7 @@ in
           "https://github.com/".insteadOf = "gh:";
           "git@github.com:".insteadOf = "ssh+gh:";
           "git@github.com:icy-thought/".insteadOf = "gh:/";
+          "git@github.com:smunix/".insteadOf = "gh:/";
           "https://gitlab.com/".insteadOf = "gl:";
           "https://gist.github.com/".insteadOf = "gist:";
           "https://bitbucket.org/".insteadOf = "bb:";

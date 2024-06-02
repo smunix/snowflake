@@ -20,7 +20,7 @@ in
     in
     {
       enable = mkEnableOption "Spread the joy of neovim in our flake";
-      package = mkPackageOption pkgs "neovim-nightly" { };
+      package = mkPackageOption pkgs "neovim-developer" { };
       template = mkOption {
         type = nullOr (enum [
           "agasaya"
@@ -33,7 +33,7 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.overlays = [ inputs.nvim-nightly.overlay ];
+      nixpkgs.overlays = [ inputs.nvim-nightly.overlays.default ];
 
       user.packages = attrValues (
         optionalAttrs (config.modules.develop.cc.enable == false) {

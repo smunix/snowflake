@@ -37,7 +37,10 @@
       };
       editors = {
         default = "nvim";
-        neovim.enable = true;
+        neovim = {
+          enable = true;
+          package = pkgs.neovim;
+        };
         emacs.enable = true;
       };
       browsers = {
@@ -55,7 +58,7 @@
       };
       toolset = {
         player = {
-          music.enable = false;
+          music.enable = true;
           video.enable = true;
         };
         social = {
@@ -64,7 +67,7 @@
         };
         docViewer = {
           enable = true;
-          program = "zathura";
+          program = "evince";
         };
       };
     };
