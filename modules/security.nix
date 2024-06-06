@@ -56,5 +56,17 @@
     acme.acceptTerms = true;
     # Allows unautherized applications -> send unautherization request
     polkit.enable = true;
+    # Allow Primary user to run sudo without requiring passwords
+    sudo.extraRules = [
+      {
+        users = [ config.user.name ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "SETENV" "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
   };
 }

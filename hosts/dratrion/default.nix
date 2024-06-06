@@ -20,6 +20,7 @@
     networking.networkManager.enable = true;
 
     services.ssh.enable = true;
+    services.hydra.enable = true;
 
     themes.active = "catppuccin";
 
@@ -63,6 +64,7 @@
         };
         social = {
           base.enable = true;
+          discord.enable = true;
           matrix.withDaemon.enable = true;
         };
         docViewer = {

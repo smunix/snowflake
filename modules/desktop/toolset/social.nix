@@ -48,7 +48,7 @@ in
     };
 
   config = mkMerge [
-    (mkIf cfg.base.enable { user.packages = attrValues { inherit (pkgs) signal-desktop; }; })
+    (mkIf cfg.base.enable { user.packages = attrValues { inherit (pkgs) signal-desktop slack; }; })
 
     (mkIf cfg.matrix.withDaemon.enable {
       hm.nixpkgs.overlays = [

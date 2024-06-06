@@ -27,7 +27,7 @@ in
 
       hostKeys = [
         {
-          comment = "icy-thought@host";
+          comment = "${config.user.home}";
           path = "/etc/ssh/ed25519_key";
           rounds = 100;
           type = "ed25519";
