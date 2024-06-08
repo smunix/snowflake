@@ -65,6 +65,7 @@ in
           ripdrag
           ripgrep
           rsync
+          xclip
           yt-dlp
           yazi
           ;

@@ -29,13 +29,14 @@ in
     (mkIf cfg.vidcom.enable {
       programs.firejail = {
         enable = true;
-        wrappedBinaries.zoom = {
-          executable = "${getExe pkgs.zoom-us}";
-          profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
-        };
+        # wrappedBinaries.zoom = {
+        #   executable = "${getExe pkgs.zoom-us}";
+        #   profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
+        # };
       };
 
       user.packages = [
+        pkgs.zoom-us
         (pkgs.makeDesktopItem {
           name = "zoom-us";
           desktopName = "Zoom (Jailed)";

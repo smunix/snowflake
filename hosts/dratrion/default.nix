@@ -44,6 +44,9 @@
         };
         emacs.enable = true;
       };
+      education = {
+        vidcom.enable = true;
+      };
       browsers = {
         default = "firefox";
         brave = {
