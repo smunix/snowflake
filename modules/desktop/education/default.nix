@@ -28,20 +28,21 @@ in
 
     (mkIf cfg.vidcom.enable {
       programs.firejail = {
-        enable = true;
-        # wrappedBinaries.zoom = {
-        #   executable = "${getExe pkgs.zoom-us}";
-        #   profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
-        # };
+        enable = false;
+        wrappedBinaries.zoom = {
+          executable = "${getExe pkgs.zoom-us}";
+          profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
+        };
       };
 
-      user.packages = [
-        pkgs.zoom-us
-        (pkgs.makeDesktopItem {
+      user.packages = with pkgs; [
+        zoom-us
+        obs-studio
+        (makeDesktopItem {
           name = "zoom-us";
-          desktopName = "Zoom (Jailed)";
+          desktopName = "Zoom";
           icon = "Zoom";
-          exec = "/run/current-system/sw/bin/zoom";
+          exec = "${zoom-us}/bin/zoom";
           genericName = "Video Conference";
           categories = [
             "Network"
