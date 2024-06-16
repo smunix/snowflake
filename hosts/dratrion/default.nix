@@ -23,7 +23,7 @@
     networking.networkManager.enable = true;
 
     services.ssh.enable = true;
-    services.hydra.enable = true;
+    services.hydra.enable = false;
 
     themes.active = "catppuccin";
 
