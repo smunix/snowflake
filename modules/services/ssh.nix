@@ -36,7 +36,7 @@ in
     };
 
     user.openssh.authorizedKeys.keyFiles =
-      if config.user.name == "icy-thought" then
+      if config.user.name == "smunix" then
         filter pathExists [
           "${config.user.home}/.ssh/id_ed25519.pub"
           "${config.user.home}/.ssh/id_rsa.pub"

@@ -14,6 +14,9 @@
       toolset = {
         git.enable = true;
         gnupg.enable = true;
+        nix = {
+          nix-index.enable = true;
+        };
       };
     };
 

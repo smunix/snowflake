@@ -60,6 +60,7 @@ in
           ack
           any-nix-shell
           dtrx
+          file
           hecate
           pwgen
           ripdrag

@@ -29,10 +29,10 @@ in
     (mkIf cfg.vidcom.enable {
       programs.firejail = {
         enable = false;
-        wrappedBinaries.zoom = {
-          executable = "${getExe pkgs.zoom-us}";
-          profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
-        };
+        # wrappedBinaries.zoom = {
+        #   executable = "${getExe pkgs.zoom-us}";
+        #   profile = "${pkgs.firejail}/etc/firejail/zoom.profile";
+        # };
       };
 
       user.packages = with pkgs; [

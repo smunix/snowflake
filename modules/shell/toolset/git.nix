@@ -151,7 +151,6 @@ in
         url = {
           "https://github.com/".insteadOf = "gh:";
           "git@github.com:".insteadOf = "ssh+gh:";
-          "git@github.com:icy-thought/".insteadOf = "gh:/";
           "git@github.com:smunix/".insteadOf = "gh:/";
           "https://gitlab.com/".insteadOf = "gl:";
           "https://gist.github.com/".insteadOf = "gist:";
