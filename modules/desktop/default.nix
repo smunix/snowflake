@@ -70,6 +70,7 @@ in
           hyperfine
           kalker
           qgnomeplatform # Qt -> GTK Theme
+          # youtube-music
           ;
 
         kalker-launcher = pkgs.makeDesktopItem {

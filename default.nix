@@ -43,10 +43,21 @@ in
       package = pkgs.nixVersions.stable;
       extraOptions = "experimental-features = nix-command flakes";
 
+      gc = {
+        automatic = true;
+        dates = "weekley";
+        options = "--delete-older-than 30d";
+      };
+
       nixPath = nixPathInputs ++ [
         "nixpkgs-overlays=${config.snowflake.dir}/overlays"
         "snowflake=${config.snowflake.dir}"
       ];
+
+      optimise = {
+        automatic = true;
+        dates = ["02:00"];
+      };
 
       registry = registryInputs // {
         snowflake.flake = inputs.self;
