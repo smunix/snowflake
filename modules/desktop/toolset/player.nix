@@ -78,7 +78,11 @@ in
         };
       };
 
-      user.packages = with pkgs; [ mplayer mpvc vlc ];
+      user.packages = with pkgs; [
+        mplayer
+        mpvc
+        vlc
+      ];
     })
   ];
 }

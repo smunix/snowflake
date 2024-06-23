@@ -39,9 +39,7 @@ in
       user.packages = with pkgs; [ texliveConTeXt ];
     }
 
-    (mkIf (cfg.program == "evince") {
-      user.packages = [ pkgs.evince ];
-    })
+    (mkIf (cfg.program == "evince") { user.packages = [ pkgs.evince ]; })
 
     (mkIf (cfg.program == "zathura") {
       hm.programs.zathura = {

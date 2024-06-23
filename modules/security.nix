@@ -63,7 +63,10 @@
         commands = [
           {
             command = "ALL";
-            options = [ "SETENV" "NOPASSWD" ];
+            options = [
+              "SETENV"
+              "NOPASSWD"
+            ];
           }
         ];
       }

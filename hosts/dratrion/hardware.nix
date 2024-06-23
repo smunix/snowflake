@@ -6,7 +6,10 @@
   ...
 }:
 {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ./v4l2loopback.nix ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./v4l2loopback.nix
+  ];
 
   # dratrion hardward-configuration.nix
 
@@ -23,21 +26,24 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/a508aa04-722e-4050-be3a-10ad0d1dbc75";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/a508aa04-722e-4050-be3a-10ad0d1dbc75";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1122-03FE";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/1122-03FE";
+    fsType = "vfat";
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
+  };
 
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/a6648f07-4358-415a-8e91-fb737bd3ec75";
-      fsType = "btrfs";
-    };
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/a6648f07-4358-415a-8e91-fb737bd3ec75";
+    fsType = "btrfs";
+  };
 
   swapDevices = [ ];
 
@@ -53,75 +59,21 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-#  fileSystems."/" = {
-#    device = "/dev/disk/by-uuid/0226cb4d-48f5-40f2-a51d-c89c5b598bb5";
-#    fsType = "ext4";
-#  };
-#
-#  fileSystems."/boot" = {
-#    device = "/dev/disk/by-uuid/49E1-394F";
-#    fsType = "vfat";
-#    options = [
-#      "fmask=0022"
-#      "dmask=0022"
-#    ];
-#  };
-#
-#  fileSystems."/home" = {
-#    device = "/dev/disk/by-uuid/d5694105-8839-4b40-ae55-2dcd9874c6a8";
-#    fsType = "ext4";
-#  };
-#
-#  # swapDevices = [ "/dev/disk/by-label/swap" ];
-#
-#  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-#  # (the default) this is the recommended approach. When using systemd-networkd it's
-#  # still possible to use this option, but it's recommended to use it in conjunction
-#  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-#  networking.useDHCP = lib.mkDefault true;
-#  # networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
-#  # networking.interfaces.enp2s0.useDHCP = lib.mkDefault true;
-#  # networking.interfaces.wlp69s0.useDHCP = lib.mkDefault true;
-#
-#  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-#  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware.pulseaudio.enable = false;
-  # dratrion
-
-  ##  fileSystems."/" = {
-  ##    device = "/dev/disk/by-label/nixos";
-  ##    fsType = "ext4";
-  ##    options = ["noatime"];
-  ##  };
-  ##
-  ##  fileSystems."/boot" = {
-  ##    device = "/dev/disk/by-label/boot";
-  ##    fsType = "vfat";
-  ##  };
-  ##
-  ##  fileSystems."/home" = {
-  ##    device = "/dev/disk/by-label/home";
-  ##    fsType = "ext4";
-  ##    options = ["noatime"];
-  ##  };
-  ##
-  ##  swapDevices = ["/dev/disk/by-label/swap"];
-  ##
-  ##  boot.kernelParams = [
-  ##    # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
-  ##    #   vulnerabilities for a slight performance boost. Don't copy this blindly!
-  ##    #   And especially not for mission critical or server/headless builds
-  ##    #   exposed to the world.
-  ##    "mitigations=off"
-  ##  ];
 
   # Refuse ICMP echo requests on on desktops/laptops; nobody has any business
   # pinging them.
   boot.kernel.sysctl."net.ipv4.icmp_echo_ignore_broadcasts" = 1;
 
+  # Nix settings
+  nix.settings = {
+    cores = lib.mkDefault 30;
+    max-jobs = lib.mkDefault 60;
+    # system-features = lib.mkDefault [ "big-parallel" "kvm" ];
+  };
+
   # CPU
-  nix.settings.max-jobs = lib.mkDefault 60;
-  powerManagement.cpuFreqGovernor = "performance";
+  powerManagement.cpuFreqGovernor = "ondemand";
 
   services = {
     upower.enable = true;

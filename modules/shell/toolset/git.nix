@@ -4,16 +4,20 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) readFile;
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.shell.toolset.git = let
-    inherit (lib.options) mkEnableOption;
-  in {
-    enable = mkEnableOption "version-control system";
-  };
+in
+{
+  options.modules.shell.toolset.git =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "version-control system";
+    };
 
   config = mkIf config.modules.shell.toolset.git.enable {
     user.packages = attrValues (
@@ -21,7 +25,7 @@ in {
         inherit (pkgs) act dura gitui;
         inherit (pkgs.gitAndTools) gh git-open;
       }
-      // optionalAttrs config.modules.shell.toolset.gnupg.enable {inherit (pkgs.gitAndTools) git-crypt;}
+      // optionalAttrs config.modules.shell.toolset.gnupg.enable { inherit (pkgs.gitAndTools) git-crypt; }
     );
 
     # Prevent x11 askPass prompt on git push:

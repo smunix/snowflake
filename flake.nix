@@ -83,7 +83,7 @@
           inherit system;
           config = {
             allowUnfree = true;
-	    allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg [ "spotify" ]); 
+            allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg [ "spotify" ]);
             nvidia.acceptLicense = true;
           };
           overlays = extraOverlays ++ (lib.attrValues self.overlays);

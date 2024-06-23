@@ -4,15 +4,19 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf;
-in {
-  options.modules.desktop.deepin = let
-    inherit (lib.options) mkEnableOption;
-  in {
-    enable = mkEnableOption "modern desktop environment";
-  };
+in
+{
+  options.modules.desktop.deepin =
+    let
+      inherit (lib.options) mkEnableOption;
+    in
+    {
+      enable = mkEnableOption "modern desktop environment";
+    };
 
   config = mkIf config.modules.desktop.deepin.enable {
     modules.desktop = {
@@ -42,7 +46,7 @@ in {
     # };
 
     services.udev = {
-      packages = [pkgs.gnome.gnome-settings-daemon];
+      packages = [ pkgs.gnome.gnome-settings-daemon ];
       extraRules = ''
         ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
         ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
@@ -51,8 +55,7 @@ in {
     };
 
     user.packages = attrValues {
-      inherit
-        (pkgs.deepin)
+      inherit (pkgs.deepin)
         dde-account-faces
         dde-appearance
         dde-calendar

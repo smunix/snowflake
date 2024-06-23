@@ -20,7 +20,8 @@ in
     };
 
   config = mkIf config.modules.desktop.browsers.brave.enable {
-    user.packages = with lib;
+    user.packages =
+      with lib;
       let
         inherit (pkgs) makeDesktopItem brave;
       in
