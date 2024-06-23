@@ -106,6 +106,14 @@ in {
         "*.o"
         "*.pyc"
         "*.elc"
+
+        # Nix build
+        "result"
+        ".devenv"
+
+        # RUST
+        "debug/"
+        "target/"
       ];
 
       extraConfig = {

@@ -138,7 +138,7 @@ in {
       dtrx
       gnumake
       # unrar
-      
+      pmutils
       unzip
       ;
   };

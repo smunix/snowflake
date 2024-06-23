@@ -74,6 +74,7 @@ in {
         # deepin-image-viewer
         deepin-kwin
         # deepin-screen-recorder
+        deepin-screensaver
         deepin-terminal
         deepin-wallpapers
         startdde
