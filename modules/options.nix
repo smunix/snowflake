@@ -88,7 +88,7 @@ in
       in
       {
         inherit name;
-        description = "Primary user account";
+        description = "Providence Salumu";
         extraGroups = [
           "wheel"
           "input"

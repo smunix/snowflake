@@ -25,6 +25,9 @@ in
 
     security.rtkit.enable = true;
 
+    hardware.pulseaudio.enable = false;
+    sound.enable = true;
+
     services.pipewire = {
       enable = true;
       wireplumber.enable = true;

@@ -4,19 +4,15 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf;
-in
-{
-  options.modules.desktop.deepin =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "modern desktop environment";
-    };
+in {
+  options.modules.desktop.deepin = let
+    inherit (lib.options) mkEnableOption;
+  in {
+    enable = mkEnableOption "modern desktop environment";
+  };
 
   config = mkIf config.modules.desktop.deepin.enable {
     modules.desktop = {
@@ -35,9 +31,9 @@ in
     };
 
     services.deepin = {
-      app-services.enable = true;
       dde-api.enable = true;
       dde-daemon.enable = true;
+      app-services.enable = true;
     };
 
     # services.gnome = {
@@ -46,7 +42,7 @@ in
     # };
 
     services.udev = {
-      packages = [ pkgs.gnome.gnome-settings-daemon ];
+      packages = [pkgs.gnome.gnome-settings-daemon];
       extraRules = ''
         ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
         ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
@@ -55,15 +51,24 @@ in
     };
 
     user.packages = attrValues {
-      inherit (pkgs.deepin)
-        dde-launchpad
-        dde-file-manager
-        dde-dock
-        dde-device-formatter
-        dde-control-center
-        dde-clipboard
-        dde-calendar
+      inherit
+        (pkgs.deepin)
         dde-account-faces
+        dde-appearance
+        dde-calendar
+        dde-clipboard
+        dde-control-center
+        deepin-wallpapers
+        dde-device-formatter
+        dde-dock
+        dde-file-manager
+        dde-launchpad
+        dde-network-core
+        dde-polkit-agent
+        dde-session
+        dde-session-ui
+        dde-session-shell
+        startdde
         ;
     };
 

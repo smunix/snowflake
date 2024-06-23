@@ -3,9 +3,8 @@
   config,
   lib,
   ...
-}:
-{
-  imports = [ ./hardware.nix ];
+}: {
+  imports = [./hardware.nix];
 
   modules = {
     shell = {
@@ -51,7 +50,7 @@
         vidcom.enable = true;
       };
       browsers = {
-        default = "firefox";
+        default = "brave";
         brave = {
           enable = true;
         };
@@ -71,7 +70,7 @@
         social = {
           base.enable = true;
           discord.enable = true;
-          matrix.withDaemon.enable = true;
+          matrix.withDaemon.enable = false;
         };
         docViewer = {
           enable = true;

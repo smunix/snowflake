@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -82,12 +83,13 @@
           inherit system;
           config = {
             allowUnfree = true;
+	    allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg [ "spotify" ]); 
             nvidia.acceptLicense = true;
           };
           overlays = extraOverlays ++ (lib.attrValues self.overlays);
         };
       pkgs = mkPkgs nixpkgs [ self.overlays.default ];
-      pkgs-unstable = mkPkgs nixpkgs-unstable [ ];
+      pkgs-unstable = mkPkgs nixpkgs-unstable [ self.overlays.default ];
 
       lib = nixpkgs.lib.extend (
         final: prev: {

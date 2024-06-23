@@ -31,7 +31,7 @@ in
           inherit (inputs.spicetify-nix.packages.${pkgs.system}.default) apps extensions themes;
         in
         {
-          enable = true;
+          enable = false;
           spotifyPackage = pkgs.spotify-unwrapped;
           spicetifyPackage = pkgs.spicetify-cli;
 
