@@ -58,7 +58,6 @@ in {
         dde-calendar
         dde-clipboard
         dde-control-center
-        deepin-wallpapers
         dde-device-formatter
         dde-dock
         dde-file-manager
@@ -68,6 +67,15 @@ in {
         dde-session
         dde-session-ui
         dde-session-shell
+        dde-widgets
+        # deepin-camera
+        deepin-calculator
+        # deepin-clone
+        # deepin-image-viewer
+        deepin-kwin
+        # deepin-screen-recorder
+        deepin-terminal
+        deepin-wallpapers
         startdde
         ;
     };

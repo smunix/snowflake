@@ -40,7 +40,15 @@ in {
     registryInputs = mapAttrs (_: v: {flake = v;}) filteredInputs;
   in {
     package = pkgs.nixVersions.stable;
-    extraOptions = "experimental-features = nix-command flakes";
+    extraOptions = ''
+      accept-flake-config = true
+      allow-import-from-derivation = true
+      cores = 30
+      experimental-features = nix-command flakes
+      max-jobs = 60
+      narinfo-cache-negative-ttl = 5
+      system-features = big-parallel kvm
+    '';
 
     nixPath =
       nixPathInputs
