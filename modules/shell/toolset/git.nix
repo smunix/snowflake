@@ -111,6 +111,9 @@ in
         "*.pyc"
         "*.elc"
 
+        # Haskell
+        "dist-newstyle/"
+
         # Nix build
         "result"
         ".devenv"
