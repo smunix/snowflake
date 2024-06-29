@@ -64,6 +64,22 @@
       url = "github:numtide/nix-filter";
       flake = true;
     };
+
+    zig-overlay = {
+      url = "github:mitchellh/zig-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    langref = {
+      # llvm: fix @wasmMemory{Size,Grow} for wasm64
+      url = "https://raw.githubusercontent.com/ziglang/zig/0fb2015fd3422fc1df364995f9782dfe7255eccd/doc/langref.html.in";
+      flake = false;
+    };
+
+    zls = {
+      url = "github:zigtools/zls?ref=master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -88,6 +104,7 @@
           };
           overlays = extraOverlays ++ (lib.attrValues self.overlays);
         };
+
       pkgs = mkPkgs nixpkgs [ self.overlays.default ];
       pkgs-unstable = mkPkgs nixpkgs-unstable [ self.overlays.default ];
 
