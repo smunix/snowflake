@@ -36,7 +36,10 @@ in
     {
       # :NOTE| Notify system about our document viewer
       modules.desktop.extensions.mimeApps.defApps.docViewer = cfg.program;
-      user.packages = with pkgs; [ texliveConTeXt ];
+      user.packages = with pkgs; [
+        pdfarranger
+        texliveConTeXt
+      ];
     }
 
     (mkIf (cfg.program == "evince") { user.packages = [ pkgs.evince ]; })

@@ -9,24 +9,21 @@
 let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
+  inherit (lib.options) mkOption mkEnableOption;
+  inherit (lib.types) enum nullOr;
 in
 {
-  options.modules.develop.zig =
-    let
-      inherit (lib.options) mkOption mkEnableOption;
-      inherit (lib.types) enum nullOr;
-    in
-    {
-      enable = mkEnableOption "Zig development";
-      version = mkOption {
-        type = nullOr (enum [
-          "master"
-          "0.13.0"
-        ]);
-        default = "master";
-        description = "Which Zig configuration to setup.";
-      };
+  options.modules.develop.zig = {
+    enable = mkEnableOption "Zig development";
+    version = mkOption {
+      type = nullOr (enum [
+        "master"
+        "0.13.0"
+      ]);
+      default = "master";
+      description = "Which Zig configuration to setup.";
     };
+  };
 
   config =
     let

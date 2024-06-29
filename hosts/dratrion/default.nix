@@ -20,7 +20,11 @@
       };
     };
 
-    networking.networkManager.enable = true;
+    networking = {
+      networkManager.enable = true;
+      # Zig builds now proxy, not sure why?
+      proxy = "http://127.0.0.1:3128";
+    };
 
     services.ssh.enable = true;
     services.hydra.enable = false;

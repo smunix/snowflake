@@ -63,7 +63,9 @@ in
           dtrx
           file
           hecate
+          joshuto
           pwgen
+          ranger
           ripdrag
           ripgrep
           rsync

@@ -8,25 +8,29 @@
 let
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkDefault mkIf mkMerge;
+  inherit (lib.options) mkOption mkEnableOption;
+  inherit (lib.types) enum nullOr;
 
   cfg = config.modules.networking;
 in
 {
-  options.modules.networking =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      iwd.enable = mkEnableOption "wpa_supplicant alt.";
-      networkd.enable = mkEnableOption "systemd network manager";
-      networkManager.enable = mkEnableOption "powerful network manager";
+  options.modules.networking = {
+    iwd.enable = mkEnableOption "wpa_supplicant alt.";
+    networkd.enable = mkEnableOption "systemd network manager";
+    networkManager.enable = mkEnableOption "powerful network manager";
+    proxy = mkOption {
+      default = null;
+      description = "set networking proxy default value";
     };
+  };
 
   config = mkMerge [
     {
       # General networking settings we want available
       networking.firewall.enable = true;
     }
+
+    (mkIf (cfg.proxy != null) { networking.proxy.default = cfg.proxy; })
 
     (mkIf cfg.iwd.enable {
       networking.wireless.iwd = {

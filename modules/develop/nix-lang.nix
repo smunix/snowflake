@@ -31,6 +31,7 @@ in
           nixfmt-rfc-style
           nix-index
           nix-init
+          nix-melt
           nix-output-monitor
           nix-tree
           nix-update

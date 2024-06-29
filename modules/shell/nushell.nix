@@ -40,7 +40,6 @@ in
         ls = "lsd -Sl";
         lsa = "lsd -Sla";
         less = "less -R";
-        nx = "nix -j60 --cores 30 --impure";
         wup = "systemctl start wg-quick-Akkadian-VPN.service";
         wud = "systemctl stop wg-quick-Akkadian-VPN.service";
       };
