@@ -58,10 +58,10 @@
           enable = true;
         };
         chrome = {
-          enable = true;
+          enable = false;
         };
         firefox = {
-          enable = true;
+          enable = false;
           privacy.enable = true;
         };
       };
