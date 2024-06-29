@@ -9,7 +9,7 @@
 
   modules = {
     shell = {
-      default = "zsh";
+      default = "nushell";
       corePkgs.enable = true;
       toolset = {
         git.enable = true;

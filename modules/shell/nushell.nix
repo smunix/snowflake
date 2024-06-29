@@ -1,32 +1,36 @@
 {
   config,
   options,
-  lib,
   pkgs,
+  lib,
   ...
 }:
 let
   inherit (lib.modules) mkIf;
+
+  cfg = config.modules.shell;
 in
 {
-  options.modules.shell.nushell =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "nushell shell" // {
-        default = true;
-      };
-    };
-
-  config = mkIf config.modules.shell.nushell.enable {
+  config = mkIf (cfg.default == "nushell") {
     modules.shell = {
       corePkgs.enable = true;
       toolset = {
-        # Enable starship-rs + ZSH integration
+        macchina.enable = true;
         starship.enable = true;
       };
     };
+
+    hm.programs.starship.enableNushellIntegration = true;
+
+    # Enable completion for sys-packages:
+    environment.pathsToLink = [ "/share/zsh" ];
+
+    hm.programs.zellij = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    environment.variables.SHELL = "${pkgs.nushell}/bin/nu";
 
     hm.programs.starship.enableBashIntegration = true;
 
@@ -36,6 +40,7 @@ in
         ls = "lsd -Sl";
         lsa = "lsd -Sla";
         less = "less -R";
+        nx = "nix -j60 --cores 30 --impure";
         wup = "systemctl start wg-quick-Akkadian-VPN.service";
         wud = "systemctl stop wg-quick-Akkadian-VPN.service";
       };

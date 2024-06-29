@@ -20,6 +20,7 @@ in
       default = mkOption {
         type = nullOr (enum [
           "fish"
+          "nushell"
           "zsh"
           "xonsh"
         ]);
@@ -32,7 +33,7 @@ in
   config = mkMerge [
     (mkIf (cfg.default != null) {
       users.defaultUserShell =
-        if cfg.default == "zsh" then "${pkgs.nushell}/bin/nu" else pkgs."${cfg.default}";
+        if cfg.default == "nushell" then "${pkgs.nushell}/bin/nu" else pkgs."${cfg.default}";
     })
 
     (mkIf cfg.corePkgs.enable {
