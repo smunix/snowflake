@@ -80,8 +80,6 @@ in
         };
         systemd.enable = true;
 
-        # extraConfig = readFile "${config.snowflake.configDir}/hyprland/hyprland.conf";
-        #
         settings = with pkgs; {
           # monitor = ",preferred,auto,1";
           monitor = ",highres,auto,auto";
@@ -270,55 +268,6 @@ in
             "$mod, V, exec, ${cliphist}/bin/cliphist list | ${wofi}/bin/wofi --dmenu | ${cliphist}/bin/cliphist decode | ${wl-clipboard-rs}/bin/wl-copy"
           ];
 
-          # bind = [
-          #   # System keys
-          #   "$mod SHIFT, q, exit"
-          #   "$mod SHIFT, c, killactive"
-          #   "$mod SHIFT, space, fullscreen"
-          #   "$mod, f, togglefloating"
-
-          #   # Menu
-          #   "$mod, p, exec, $menu run"
-
-          #   # Workspaces
-          #   ## cycle workspaces
-          #   "$mod, 1, workspace, 1"
-          #   "$mod, 2, workspace, 2"
-          #   "$mod, 3, workspace, 3"
-          #   "$mod, 4, workspace, 4"
-          #   "$mod, 5, workspace, 5"
-          #   "$mod, 6, workspace, 6"
-          #   "$mod, 7, workspace, 7"
-          #   "$mod, 8, workspace, 8"
-          #   "$mod, 9, workspace, 9"
-          #   "$mod, 10, workspace, 10"
-          #   "$mod, s, togglespecialworkspace"
-
-          #   ## move between workspaces
-          #   "$mod SHIFT, 1, movetoworkspacesilent, 1"
-          #   "$mod SHIFT, 2, movetoworkspacesilent, 2"
-          #   "$mod SHIFT, 3, movetoworkspacesilent, 3"
-          #   "$mod SHIFT, 4, movetoworkspacesilent, 4"
-          #   "$mod SHIFT, 5, movetoworkspacesilent, 5"
-          #   "$mod SHIFT, 6, movetoworkspacesilent, 6"
-          #   "$mod SHIFT, 7, movetoworkspacesilent, 7"
-          #   "$mod SHIFT, 8, movetoworkspacesilent, 8"
-          #   "$mod SHIFT, 9, movetoworkspacesilent, 9"
-          #   "$mod SHIFT, 10, movetoworkspacesilent, 10"
-          #   "$mod SHIFT, s, movetoworkspacesilent, special"
-
-          #   ## Movement direction
-          #   "$mod, left, movefocus, h"
-          #   "$mod, right, movefocus, l"
-          #   "$mod, up, movefocus, k"
-          #   "$mod, down, movefocus, j"
-
-          #   # "$mod, X, exec, $terminal --class system-monitor -e btop"
-          #   "$mod, x, exec, $terminal"
-          #   "$mod, return, exec, $terminal"
-          #   "$mod, b, exec, brave"
-          # ];
-
           bindm = [
             "$mod, mouse:272, movewindow" # 272 -> Left-Mouse button
             "$mod, mouse:273, resizewindow" # 273 -> Right-Mouse button
@@ -394,22 +343,6 @@ in
             "col.shadow" = "rgba(00000055)";
           };
 
-          # decoration = {
-          #   # blur = {
-          #   #     enabled           = false
-          #   #     size              = 3
-          #   #     passes            = 1
-          #   #     new_optimizations = true
-          #   # }
-          #   active_opacity = 1.0;
-          #   inactive_opacity = 1.0;
-          #   fullscreen_opacity = 1.0;
-          #   dim_inactive = true;
-          #   dim_strength = 0.2;
-          #   drop_shadow = true;
-          #   rounding = 10;
-          #   # shadow_offset          = [0, 0]
-          # };
           animations = {
             enabled = true;
 
@@ -438,30 +371,6 @@ in
             ];
           };
 
-          # animations = {
-          #   enabled = true;
-          #   bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-          #   animation = [
-          #     "windows, 1, 7, myBezier"
-          #     "windowsOut, 1, 7, default, popin 80%"
-          #     "border, 1, 10, default"
-          #     "borderangle, 1, 8, default"
-          #     "fade, 1, 7, default"
-          #     "workspaces, 1, 6, default"
-          #   ];
-          # };
-
-          # dwindle = {
-          #   preserve_split = true;
-          #   pseudotile = true;
-          #   special_scale_factor = 0.8;
-          #   split_width_multiplier = 1.0;
-          #   use_active_for_splits = true;
-          #   no_gaps_when_only = true;
-          #   force_split = 0;
-          #   # special_scale_factor = 1.0;
-          # };
-
           master = {
             new_status = "master";
             # new_is_master        = true;
@@ -471,12 +380,7 @@ in
           };
 
           misc = {
-            # new_is_master = true;
-            # special_scale_factor = 1;
-            # no_gaps_when_only = false;
             force_default_wallpaper = -1;
-            # disable_hyprland_logo = true;
-            # disable_splash_rendering = true;
             mouse_move_enables_dpms = true;
           };
         };
