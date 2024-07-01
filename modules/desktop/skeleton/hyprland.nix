@@ -107,8 +107,8 @@ in
             "dbus-update-activation-environment --systemd &"
             "${networkmanagerapplet}/bin/nm-applet &"
             "${wl-clip-persist}/bin/wl-clip-persist --clipboard both"
-            "${swaybg}/bin/swaybg -m fill -i ~/Pictures/wallpapers/wallpaper.jpeg &"
-            "sleep 1 && ${swaylock}/bin/swaylock"
+            "${swaybg}/bin/swaybg -m fill -i $XDG_DATA_HOME/wallpaper &"
+            "sleep 1 && ${swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --fade-in 0.2"
             "hyprctl setcursor Nordzy-cursors 22 &"
             "${poweralertd}/bin/poweralertd &"
             "waybar &"
@@ -190,7 +190,7 @@ in
             "$mod, Space, togglefloating,"
             "$mod, P, exec, pkill wofi || wofi --show drun"
             "$mod SHIFT, D, exec, hyprctl dispatch exec '[workspace 5 silent] discord'"
-            "$mod, Escape, exec, ${swaylock}/bin/swaylock"
+            "$mod, Escape, exec, ${swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --fade-in 0.2"
             # "$mod SHIFT, Escape, exec, shutdown-script"
             # "$mod, P, pseudo,"
             "$mod, J, togglesplit,"
@@ -483,56 +483,58 @@ in
       };
     };
 
-    user.packages = attrValues {
-      inherit (pkgs)
-        cliphist
+    user.packages = with pkgs; [
+      cliphist
 
-        egl-wayland
-        eglexternalplatform
-        libglvnd
+      egl-wayland
+      eglexternalplatform
+      libglvnd
 
-        imv
-        libnotify
+      imv
+      libnotify
 
-        mako
-        man-pages
-        networkmanagerapplet
+      mako
+      man-pages
+      networkmanagerapplet
 
-        pamixer
-        pavucontrol
-        playerctl
-        poweralertd
+      cinnamon.nemo-with-extensions
 
-        wf-recorder
-        wlr-randr
-        # wallpapers
+      pamixer
+      pavucontrol
+      playerctl
+      poweralertd
 
-        hyprpaper
-        swaybg
-        wpaperd
-        mpvpaper
-        swww
-        # gtk rofi
+      wf-recorder
+      wlr-randr
+      # wallpapers
 
-        wofi
-        # hyprland wiki also suggests
+      hyprpaper
+      swaybg
+      swaylock-effects
+      wpaperd
+      mpvpaper
+      swww
+      # gtk rofi
 
-        bemenu
-        fuzzel
-        tofi
+      wofi
+      # hyprland wiki also suggests
 
-        glxinfo
+      bemenu
+      fuzzel
+      tofi
 
-        # nvidia stuff
-        # vulkan
-        vulkan-loader
-        vulkan-tools
-        vulkan-validation-layers
+      glxinfo
 
-        wl-clipboard-rs
-        wl-clip-persist
-        ;
-    };
+      # nvidia stuff
+      # vulkan
+      vulkan-loader
+      vulkan-tools
+      vulkan-validation-layers
+
+      wl-clipboard-rs
+      wl-clip-persist
+
+    ];
 
     home = {
       # System wallpaper:

@@ -105,6 +105,12 @@ in
         };
       };
 
+      user.packages = with pkgs; [
+        swaylock-effects
+        swayidle
+        sway-audio-idle-inhibit
+      ];
+
       xdg.portal.wlr.enable = true;
 
       programs = {
@@ -128,6 +134,40 @@ in
       environment.etc."greetd/environments".text = ''
         Hyprland
       '';
+
+      hm.services.swayidle =
+        let
+          lockCmd = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --fade-in 0.2";
+        in
+        {
+          enable = true;
+          systemdTarget = "hyprland-session.target";
+          timeouts = with pkgs; [
+            {
+              timeout = 300; # 5 min, lock screen
+              command = lockCmd;
+            }
+            {
+              timeout = 600; # 10 min, switch screen off
+              command = "hyprctl dispatch dpms off";
+              resumeCommand = "hyprctl dispatch dpms on";
+            }
+            {
+              timeout = 900; # 15 min, suspend
+              command = "${systemd}/bin/systemctl suspend";
+            }
+          ];
+          events = with pkgs; [
+            {
+              event = "before-sleep";
+              command = lockCmd;
+            }
+            {
+              event = "lock";
+              command = lockCmd;
+            }
+          ];
+        };
 
       hm.wayland.windowManager.sway = {
         enable = false;

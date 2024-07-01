@@ -177,6 +177,7 @@ in
           modules-right = [
             "custom/left"
             "custom/media"
+            "custom/audio_idle_inhibitor"
             "tray"
             "cpu"
             "memory"
@@ -285,6 +286,18 @@ in
             on-click = "pkill wofi || wofi --show drun";
             on-click-right = "pkill wofi || wallpaper-picker";
             tooltip = "false";
+          };
+          "custom/audio_idle_inhibitor" = {
+            format = "{icon}";
+            exec = "sway-audio-idle-inhibit --dry-print-both-waybar";
+            exec-if = "which sway-audio-idle-inhibit";
+            return-type = "json";
+            format-icons = {
+              output = "";
+              input = "";
+              output-input = "  ";
+              none = "";
+            };
           };
           "custom/media" = {
             format = "{icon}{}";
