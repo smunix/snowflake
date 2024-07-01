@@ -96,6 +96,15 @@ in
     }
 
     (mkIf (cfg.envProto == "wayland") {
+      security = {
+        polkit.enable = true;
+        pam.services = {
+          swaylock = {
+            fprintAuth = false;
+          };
+        };
+      };
+
       xdg.portal.wlr.enable = true;
 
       programs = {
@@ -103,26 +112,18 @@ in
         regreet.enable = true;
       };
 
-      # environment.systemPackages = attrValues { inherit (pkgs) egl-wayland eglexternalplatform; };
-
-      security.polkit.enable = true;
-
-      services.greetd =
-        let
-          hprlandCfgFile = "/home/${config.user.name}/.config/hypr/hyprland.conf";
-        in
-        {
-          enable = true;
-          settings = {
-            default_session.command = ''
-              ${pkgs.greetd.tuigreet}/bin/tuigreet \
-                --time \
-                --asterisks \
-                --user-menu \
-                --cmd "Hyprland --config ${hprlandCfgFile}"
-            '';
-          };
+      services.greetd = {
+        enable = true;
+        settings = {
+          default_session.command = ''
+            ${pkgs.greetd.tuigreet}/bin/tuigreet \
+              --time \
+              --asterisks \
+              --user-menu \
+              --cmd "Hyprland --config ${config.user.home}/.config/hypr/hyprland.conf"
+          '';
         };
+      };
 
       environment.etc."greetd/environments".text = ''
         Hyprland
