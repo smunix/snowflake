@@ -8,27 +8,24 @@
 let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
+  inherit (lib.options) mkOption mkEnableOption;
+  inherit (lib.types) nullOr enum;
   cfg = config.modules.shell;
 in
 {
-  options.modules.shell =
-    let
-      inherit (lib.options) mkOption mkEnableOption;
-      inherit (lib.types) nullOr enum;
-    in
-    {
-      default = mkOption {
-        type = nullOr (enum [
-          "fish"
-          "nushell"
-          "zsh"
-          "xonsh"
-        ]);
-        default = null;
-        description = "Default system shell";
-      };
-      corePkgs.enable = mkEnableOption "core shell packages";
+  options.modules.shell = {
+    default = mkOption {
+      type = nullOr (enum [
+        "fish"
+        "nushell"
+        "zsh"
+        "xonsh"
+      ]);
+      default = null;
+      description = "Default system shell";
     };
+    corePkgs.enable = mkEnableOption "core shell packages";
+  };
 
   config = mkMerge [
     (mkIf (cfg.default != null) {
@@ -72,6 +69,7 @@ in
           xclip
           yt-dlp
           yazi
+          xterm
           ;
 
         # GNU Alternatives

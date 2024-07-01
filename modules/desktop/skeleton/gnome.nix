@@ -8,15 +8,12 @@
 let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf;
+  inherit (lib.options) mkEnableOption;
 in
 {
-  options.modules.desktop.gnome =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "modern desktop environment";
-    };
+  options.modules.desktop.gnome = {
+    enable = mkEnableOption "modern desktop environment";
+  };
 
   config = mkIf config.modules.desktop.gnome.enable {
     modules.desktop = {

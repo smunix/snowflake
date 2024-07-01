@@ -9,24 +9,21 @@
 let
   inherit (builtins) pathExists readFile;
   inherit (lib.modules) mkIf;
+  inherit (lib.options) mkEnableOption mkOption;
+  inherit (lib.types) nullOr path;
 
   cfg = config.modules.hardware.kmonad;
 in
 {
-  options.modules.hardware.kmonad =
-    let
-      inherit (lib.options) mkEnableOption mkOption;
-      inherit (lib.types) nullOr path;
-    in
-    {
-      enable = mkEnableOption "advanced kbd management";
-      deviceID = mkOption {
-        type = nullOr path;
-        default = null;
-        example = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
-        description = "path to device.kbd file";
-      };
+  options.modules.hardware.kmonad = {
+    enable = mkEnableOption "advanced kbd management";
+    deviceID = mkOption {
+      type = nullOr path;
+      default = null;
+      example = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
+      description = "path to device.kbd file";
     };
+  };
 
   imports =
     let

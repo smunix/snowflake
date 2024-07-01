@@ -22,7 +22,9 @@ in
     (mkIf config.modules.develop.cc.enable {
       user.packages = attrValues {
         inherit (pkgs)
+          ccls
           clang
+          clang-tools
           bear
           gdb
           cmake

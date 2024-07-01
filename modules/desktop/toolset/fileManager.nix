@@ -8,27 +8,24 @@
 let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
+  inherit (lib.options) mkEnableOption mkOption;
+  inherit (lib.types) nullOr enum;
 
   cfg = config.modules.desktop.toolset.fileManager;
 in
 {
-  options.modules.desktop.toolset.fileManager =
-    let
-      inherit (lib.options) mkEnableOption mkOption;
-      inherit (lib.types) nullOr enum;
-    in
-    {
-      enable = mkEnableOption "A file-browser for our desktop";
-      program = mkOption {
-        type = nullOr (enum [
-          "dolphin"
-          "nautilus"
-          "thunar"
-        ]);
-        default = "nautilus";
-        description = "which file-browser to install";
-      };
+  options.modules.desktop.toolset.fileManager = {
+    enable = mkEnableOption "A file-browser for our desktop";
+    program = mkOption {
+      type = nullOr (enum [
+        "dolphin"
+        "nautilus"
+        "thunar"
+      ]);
+      default = "nautilus";
+      description = "which file-browser to install";
     };
+  };
 
   config = mkMerge [
     {

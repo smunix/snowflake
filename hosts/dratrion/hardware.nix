@@ -11,20 +11,30 @@
     ./v4l2loopback.nix
   ];
 
-  # dratrion hardward-configuration.nix
+  boot = {
+    extraModulePackages = [ ];
+    initrd.availableKernelModules = [
+      "ahci"
+      "xhci_pci"
+      "vmd"
+      "usbhid"
+      "uas"
+      "usb_storage"
+      "sd_mod"
+    ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-intel" ];
+    kernelParams = [
+      "pcie_aspm.policy=performance"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia_drm.fbdev=1" # Disable mesa loading simpledrm
+      "nvidia-drm.modeset=1"
+    ];
 
-  boot.initrd.availableKernelModules = [
-    "ahci"
-    "xhci_pci"
-    "vmd"
-    "usbhid"
-    "uas"
-    "usb_storage"
-    "sd_mod"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+    # Refuse ICMP echo requests on on desktops/laptops; nobody has any business
+    # pinging them.
+    kernel.sysctl."net.ipv4.icmp_echo_ignore_broadcasts" = 1;
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/a508aa04-722e-4050-be3a-10ad0d1dbc75";
@@ -57,13 +67,29 @@
   # networking.interfaces.wlp69s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware.pulseaudio.enable = false;
-
-  # Refuse ICMP echo requests on on desktops/laptops; nobody has any business
-  # pinging them.
-  boot.kernel.sysctl."net.ipv4.icmp_echo_ignore_broadcasts" = 1;
+  hardware = {
+    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    # Hyprland user experience
+    nvidia = {
+      modesetting.enable = true;
+      nvidiaSettings = true;
+      open = false;
+      powerManagement = {
+        enable = true;
+        finegrained = false;
+      };
+    };
+    opengl = {
+      enable = true;
+      extraPackages = with pkgs; [
+        vaapiVdpau
+        libvdpau-va-gl
+        vdpauinfo
+      ];
+    };
+    pulseaudio.enable = false;
+  };
 
   # Nix settings
   nix.settings = {
@@ -79,6 +105,7 @@
     upower.enable = true;
     xserver = {
       videoDrivers = [ "nvidia" ];
+      # videoDrivers = [ "nouveau" ];
       deviceSection = ''
         Option "TearFree" "true"
       '';
@@ -92,5 +119,6 @@
     pointer.enable = true;
     printer.enable = true;
     v4l2loopback.enable = true;
+    kmonad.deviceID = "/dev/input/by-path/usb-Logitech_USB_Receiver-event-kbd";
   };
 }

@@ -20,14 +20,13 @@ in
       };
     };
 
-    hm.programs.starship.enableNushellIntegration = true;
+    # hm.programs.starship.enableNushellIntegration = true;
 
     # Enable completion for sys-packages:
-    environment.pathsToLink = [ "/share/zsh" ];
+    # environment.pathsToLink = [ "/share/zsh" ];
 
     hm.programs.zellij = {
       enable = true;
-      enableZshIntegration = true;
     };
 
     environment.variables.SHELL = "${pkgs.nushell}/bin/nu";

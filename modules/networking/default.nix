@@ -7,9 +7,14 @@
 }:
 let
   inherit (lib.meta) getExe;
-  inherit (lib.modules) mkDefault mkIf mkMerge;
+  inherit (lib.modules)
+    mkDefault
+    mkIf
+    mkMerge
+    mkForce
+    ;
   inherit (lib.options) mkOption mkEnableOption;
-  inherit (lib.types) enum nullOr;
+  inherit (lib.types) enum nullOr str;
 
   cfg = config.modules.networking;
 in
@@ -20,6 +25,7 @@ in
     networkManager.enable = mkEnableOption "powerful network manager";
     proxy = mkOption {
       default = null;
+      type = nullOr str;
       description = "set networking proxy default value";
     };
   };
@@ -30,7 +36,11 @@ in
       networking.firewall.enable = true;
     }
 
-    (mkIf (cfg.proxy != null) { networking.proxy.default = cfg.proxy; })
+    (mkIf (cfg.proxy != null) {
+      networking.proxy = {
+        default = mkForce cfg.proxy;
+      };
+    })
 
     (mkIf cfg.iwd.enable {
       networking.wireless.iwd = {

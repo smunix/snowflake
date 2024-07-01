@@ -23,7 +23,7 @@
     networking = {
       networkManager.enable = true;
       # Zig builds now proxy, not sure why?
-      proxy = "http://127.0.0.1:3128";
+      # proxy = "http://127.0.0.1:3128";
     };
 
     services.ssh.enable = true;
@@ -32,6 +32,7 @@
     themes.active = "catppuccin";
 
     develop = {
+      cc.enable = true;
       haskell.enable = true;
       nix.enable = true;
       python.enable = true;
@@ -43,11 +44,11 @@
     };
 
     desktop = {
-      deepin.enable = true;
-      terminal = {
-        default = "alacritty";
-        alacritty.enable = true;
-      };
+      deepin.enable = false;
+      hyprland.enable = true;
+
+      terminal.default = "rio";
+      # terminal.default = "wezterm";
       editors = {
         default = "nvim";
         neovim = {

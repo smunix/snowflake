@@ -8,29 +8,33 @@
 let
   inherit (builtins) toString;
   inherit (lib.modules) mkIf mkMerge;
+  inherit (lib.options) mkEnableOption;
 
   active = config.modules.themes.active;
 in
 {
-  options.modules.desktop.terminal.rio =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "A Rust/WebGPU based terminal emulator.";
-    };
+  options.modules.desktop.terminal.rio = {
+    enable = mkEnableOption "A Rust/WebGPU based terminal emulator.";
+  };
 
   config = mkIf config.modules.desktop.terminal.rio.enable {
-    modules.shell.toolset.tmux.enable = true;
+    modules.shell.toolset.tmux.enable = false;
 
     hm.programs.rio = {
       enable = true;
 
       settings = mkMerge [
         {
+          # env-vars = {
+          #   # TERM = "xterm-256color";
+          #   TERM = "wezterm";
+          # };
+
           cursor = "▇";
-          blinking-cursor = false;
-          editor = "emacsclient -c";
+
+          blinking-cursor = true;
+          # editor = "emacsclient -c";
+          editor = "emacs -nw";
           padding-x = 10;
 
           renderer = {
@@ -40,7 +44,7 @@ in
           };
 
           keyboard = {
-            use-kitty-keyboard-protocol = false;
+            use-kitty-keyboard-protocol = true;
             disable-ctlseqs-alt = false;
           };
 
@@ -58,11 +62,12 @@ in
 
           window = {
             mode = "Windowed";
-            background-opacity = 0.8;
+            background-opacity = 0.9;
             foreground-opacity = 1.0;
-            blur = false;
+            blur = true;
           };
         }
+
         (mkIf (active != null) {
           fonts =
             let
@@ -70,7 +75,7 @@ in
             in
             {
               family = "${family}";
-              size = size;
+              size = size + 1;
 
               # extras = [{family = "";}];
 

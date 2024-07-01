@@ -42,8 +42,9 @@ in
             let
               srv = config.services;
             in
-            srv.xserver.enable
-            || srv.sway.enable
+            (srv.xserver.enable && (cfg.envProto == "x11"))
+            # || (config.programs.sway.enable)
+            || (cfg.envProto == "wayland")
             || !(anyAttrs (n: v: isAttrs v && anyAttrs (n: v: isAttrs v && v.enable)) cfg);
           message = "Prevent desktop applications from enabling without a DE/WM.";
         }
@@ -92,21 +93,52 @@ in
         packages = attrValues { inherit (pkgs) sarasa-gothic scheherazade-new; };
       };
 
-      services.xserver.enable = true;
-
-      xdg.portal = {
-        enable = true;
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-        config.common.default = "*";
-      };
-      services.gnome.gnome-keyring.enable = true;
     }
 
     (mkIf (cfg.envProto == "wayland") {
       xdg.portal.wlr.enable = true;
 
-      # Login Manager: ReGreet!
-      programs.regreet.enable = true;
+      programs = {
+        xwayland.enable = true;
+        regreet.enable = true;
+      };
+
+      # environment.systemPackages = attrValues { inherit (pkgs) egl-wayland eglexternalplatform; };
+
+      security.polkit.enable = true;
+
+      services.greetd =
+        let
+          hprlandCfgFile = "/home/${config.user.name}/.config/hypr/hyprland.conf";
+        in
+        {
+          enable = true;
+          settings = {
+            default_session.command = ''
+              ${pkgs.greetd.tuigreet}/bin/tuigreet \
+                --time \
+                --asterisks \
+                --user-menu \
+                --cmd "Hyprland --config ${hprlandCfgFile}"
+            '';
+          };
+        };
+
+      environment.etc."greetd/environments".text = ''
+        Hyprland
+      '';
+
+      hm.wayland.windowManager.sway = {
+        enable = false;
+        config = rec {
+          modifier = "Mod4"; # Super key
+          output = {
+            "DP-2" = {
+              mode = "2560x1440@60Hz";
+            };
+          };
+        };
+      };
     })
 
     (mkIf (cfg.envProto == "x11") {
@@ -122,6 +154,15 @@ in
           user = config.user.name;
         };
       };
+
+      # services.xserver.enable = true;
+
+      xdg.portal = {
+        enable = true;
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        config.common.default = "*";
+      };
+      services.gnome.gnome-keyring.enable = true;
 
       hm.xsession = {
         enable = true;

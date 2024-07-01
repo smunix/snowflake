@@ -10,21 +10,18 @@ let
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf;
   inherit (lib.strings) concatStringsSep;
+  inherit (lib.options) mkEnableOption mkPackageOption;
 
   cfg = config.modules.desktop.extensions.rofi;
   envProto = config.modules.desktop.envProto;
 in
 {
-  options.modules.desktop.extensions.rofi =
-    let
-      inherit (lib.options) mkEnableOption mkPackageOption;
-    in
-    {
-      enable = mkEnableOption "window switcher and app-launcher";
-      package = mkPackageOption pkgs "rofi" {
-        default = if (envProto == "wayland") then "rofi-wayland" else "rofi";
-      };
+  options.modules.desktop.extensions.rofi = {
+    enable = mkEnableOption "window switcher and app-launcher";
+    package = mkPackageOption pkgs "rofi" {
+      default = if (envProto == "wayland") then "rofi-wayland" else "rofi";
     };
+  };
 
   # :TODO| re-create theming -> general + changable banner (drun, run, systemd and power-menu)
 
