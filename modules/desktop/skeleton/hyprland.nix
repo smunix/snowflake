@@ -74,7 +74,7 @@ in
 
       wayland.windowManager.hyprland = {
         enable = true;
-        package = pkgs.hyprland-debug;
+        package = pkgs.hyprland;
         xwayland = {
           enable = true;
         };
