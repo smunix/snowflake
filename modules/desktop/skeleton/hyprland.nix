@@ -144,6 +144,10 @@ in
 
           # windowrulev2
           windowrulev2 = [
+            "workspace 1, class:^(Brave-browser)$"
+            "workspace 2, class:^(evince)$"
+            "workspace 3 float, class:^(rio)$"
+            "workspace 7 silent float, title:^(.*Private.*)$,class:^(Brave-browser)$"
             "float, title:^(Picture-in-Picture)$"
             "opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$"
             "pin, title:^(Picture-in-Picture)$"
