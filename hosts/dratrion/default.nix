@@ -66,10 +66,10 @@
           enable = true;
         };
         chrome = {
-          enable = false;
+          enable = true;
         };
         firefox = {
-          enable = false;
+          enable = true;
           privacy.enable = true;
         };
       };

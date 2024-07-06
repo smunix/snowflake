@@ -145,9 +145,12 @@ in
           # windowrulev2
           windowrulev2 = [
             "workspace 1, class:^(Brave-browser)$"
+            "workspace 1, class:^(firefox-nightly)$"
             "workspace 2, class:^(evince)$"
-            "workspace 3 float, class:^(rio)$"
-            "workspace 7 silent float, title:^(.*Private.*)$,class:^(Brave-browser)$"
+            "workspace 3, class:^(rio)$"
+            "float, class:^(rio)$"
+            "workspace 7 silent, title:^(.*Private.*)$,class:^(Brave-browser)$"
+            "float, title:^(.*Private.*)$,class:^(Brave-browser)$"
             "float, title:^(Picture-in-Picture)$"
             "opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$"
             "pin, title:^(Picture-in-Picture)$"
@@ -306,9 +309,7 @@ in
 
           general = {
             apply_sens_to_raw = false;
-            # "col.active_border" = "rgba(f38ba8ff)";
-            # "col.inactive_border" = "rgba(181825ff)";
-            layout = "dwindle"; # master | dwindle
+            layout = "master"; # master | dwindle
             gaps_in = 0;
             gaps_out = 0;
             border_size = 2;
@@ -320,16 +321,11 @@ in
           };
           decoration = {
             rounding = 5;
-            # active_opacity = 0.90;
-            # inactive_opacity = 0.90;
-            # fullscreen_opacity = 1.0;
 
             blur = {
               enabled = true;
               size = 1;
               passes = 1;
-              # size = 4;
-              # passes = 2;
               brightness = 1;
               contrast = 1.4;
               ignore_opacity = true;
