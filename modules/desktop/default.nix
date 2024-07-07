@@ -143,10 +143,10 @@ in
           enable = true;
           systemdTarget = "hyprland-session.target";
           timeouts = with pkgs; [
-            {
-              timeout = 300; # 5 min, lock screen
-              command = lockCmd;
-            }
+            # {
+            #   timeout = 300; # 5 min, lock screen
+            #   command = lockCmd;
+            # }
             {
               timeout = 600; # 10 min, switch screen off
               command = "hyprctl dispatch dpms off";
