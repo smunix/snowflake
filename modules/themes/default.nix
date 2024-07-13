@@ -87,7 +87,7 @@ in
           weight = mkOpt str "Bold";
           weightAlt = mkOpt str "Bold";
           weightNum = mkOpt int 700;
-          size = mkOpt int 13;
+          size = mkOpt int 11;
         };
         sans = {
           family = mkOpt str "";
