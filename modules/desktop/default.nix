@@ -158,10 +158,10 @@ in
             }
           ];
           events = with pkgs; [
-            {
-              event = "before-sleep";
-              command = lockCmd;
-            }
+            # {
+            #   event = "before-sleep";
+            #   command = lockCmd;
+            # }
             {
               event = "lock";
               command = lockCmd;
@@ -200,8 +200,8 @@ in
 
       xdg.portal = {
         enable = true;
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-        config.common.default = "*";
+        configPackages = [ pkgs.xdg-desktop-portal-gtk ];
+        # config.common.default = "*";
       };
       services.gnome.gnome-keyring.enable = true;
 

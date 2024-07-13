@@ -60,7 +60,9 @@ in
 
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [ (xdg-desktop-portal-hyprland.override { inherit hyprland; }) ];
+      # extraPortals = with pkgs; [ (xdg-desktop-portal-hyprland.override { inherit hyprland; }) ];
+      # https://github.com/flatpak/xdg-desktop-portal/blob/1.18.1/doc/portals.conf.rst.in
+      configPackages = with pkgs; [ (xdg-desktop-portal-hyprland.override { inherit hyprland; }) ];
       wlr.enable = true;
       xdgOpenUsePortal = true;
     };

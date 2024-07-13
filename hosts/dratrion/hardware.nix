@@ -80,7 +80,8 @@
         finegrained = false;
       };
     };
-    opengl = {
+    graphics = {
+      # opengl formerly
       enable = true;
       extraPackages = with pkgs; [
         vaapiVdpau

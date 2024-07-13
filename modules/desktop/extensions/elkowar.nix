@@ -22,9 +22,7 @@ in
     in
     {
       enable = mkEnableOption "wacky x11/wayland widgets";
-      package = mkPackageOption pkgs "eww" {
-        default = if (envProto == "wayland") then "eww-wayland" else "eww";
-      };
+      package = mkPackageOption pkgs "eww" { default = "eww"; }; # eww-walyland is deprecated
     };
 
   config = mkIf cfg.enable {
