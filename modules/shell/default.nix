@@ -49,8 +49,8 @@ in
       programs.nh = {
         enable = true;
         clean.enable = true;
-        clean.extraArgs = "--keep-since 14d --keep 3";
-        flake = "/home/smunix/Workspace/public/snowflake";
+        clean.extraArgs = "--keep-since 7d --keep 3";
+        flake = "${config.user.home}/Workspace/public/snowflake";
       };
 
       user.packages = attrValues {
