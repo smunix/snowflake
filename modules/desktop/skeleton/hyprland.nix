@@ -92,7 +92,7 @@ in
 
           env = mapAttrsToList (n: v: "${n},${v}") env;
 
-          "$terminal" = "rio";
+          "$terminal" = "${config.modules.desktop.terminal.default}";
           "$menu" = "rofi -show";
           "$fileManager" = "${cinnamon.nemo-with-extensions}/bin/nemo";
 
@@ -150,8 +150,10 @@ in
             "workspace 1, class:^(firefox-nightly)$"
             "workspace 2, class:^(evince)$"
             "workspace 3, class:^(rio)$"
+            "workspace 3, class:^(Alacritty)$"
             "workspace 3, class:^(pavucontrol)$"
             "float, class:^(rio)$"
+            "float, class:^(Alacritty)$"
             "float, class:^(pavucontrol)$"
             "workspace 7 silent, title:^(.*Private.*)$,class:^(Brave-browser)$"
             "float, title:^(.*Private.*)$,class:^(Brave-browser)$"
