@@ -10,15 +10,14 @@ let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.meta) getExe;
+  inherit (lib.options) mkEnableOption;
+
+  neovimCfg = config.modules.desktop.editors.neovim;
 in
 {
-  options.modules.develop.rust =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "Rust development";
-    };
+  options.modules.develop.rust = {
+    enable = mkEnableOption "Rust development";
+  };
 
   config = mkMerge [
     (mkIf config.modules.develop.rust.enable {
@@ -26,7 +25,15 @@ in
 
       user.packages = attrValues {
         rust-package = pkgs.rust-bin.stable.latest.default;
-        inherit (pkgs) rust-analyzer rust-script;
+        inherit (pkgs)
+          bacon
+          cargo
+          gcc
+          rustc
+          rustfmt
+          rust-analyzer
+          rust-script
+          ;
       };
 
       environment.shellAliases = {
@@ -36,6 +43,28 @@ in
 
       hm.programs.vscode.extensions = attrValues {
         inherit (pkgs.vscode-extensions.rust-lang) rust-analyzer;
+      };
+    })
+
+    (mkIf (neovimCfg.enable && neovimCfg.template == "nixvim") {
+      hm = {
+        programs.nixvim = {
+          plugins = {
+            rustaceanvim = { enable = true; };
+            rust-tools = { enable = false; };
+            # lsp-format.lspServersToEnable = [ "rust-analyzer" ];
+            lsp.servers = {
+              rust-analyzer = {
+                enable = false;
+                installCargo = true;
+                installRustc = true;
+                settings = {
+                  cargo.features = "all";
+                };
+              };
+            };
+          };
+        };
       };
     })
 

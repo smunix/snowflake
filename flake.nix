@@ -67,7 +67,19 @@
 
     # Application -> (Cached) Git
     emacs.url = "github:nix-community/emacs-overlay";
+
     nvim-nightly.url = "github:nix-community/neovim-nightly-overlay";
+
+    # # Tablines
+    # plugin-nvim-bufferline-lua.url = "github:akinsho/nvim-bufferline.lua?ref=main";
+    # plugin-nvim-bufferline-lua.flake = false;
+
+    neovim-flake = {
+      url = "github:smunix/neovim-flake?ref=smunix";
+      # inputs.plugin-nvim-bufferline-lua.follows = "plugin-nvim-bufferline-lua";
+      flake = true;
+    };
+
     spicetify-nix.url = "github:the-argus/spicetify-nix";
     firefox.url = "github:nix-community/flake-firefox-nightly";
 
@@ -104,7 +116,10 @@
       url = "github:numtide/nix-filter";
       flake = true;
     };
-
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zig-overlay = {
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";

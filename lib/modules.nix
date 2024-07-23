@@ -36,7 +36,7 @@ rec {
       let
         path = "${toString dir}/${n}";
       in
-      if v == "directory" then
+      if v == "directory" && n != "neovim" then
         nameValuePair n (mapModulesRec path fn)
       else if v == "regular" && n != "default.nix" && hasSuffix ".nix" n then
         nameValuePair (removeSuffix ".nix" n) (fn path)
@@ -48,7 +48,7 @@ rec {
     dir: fn:
     let
       dirs = mapAttrsToList (k: _: "${dir}/${k}") (
-        filterAttrs (n: v: v == "directory" && !(hasPrefix "_" n)) (readDir dir)
+        filterAttrs (n: v: v == "directory" && n != "neovim" && !(hasPrefix "_" n)) (readDir dir)
       );
       files = attrValues (mapModules dir id);
       paths = files ++ concatLists (map (d: mapModulesRec' d id) dirs);
