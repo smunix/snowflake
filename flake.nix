@@ -206,7 +206,7 @@
 
         hyprland =
           let
-            props = builtins.fromJSON (builtins.readFile "${inputs.hyprland}/props.json");
+            # props = builtins.fromJSON (builtins.readFile "${inputs.hyprland}/props.json");
             mkDate =
               longDate:
               (lib.concatStringsSep "-" [
@@ -227,7 +227,7 @@
               hyprland = final.callPackage "${inputs.hyprland}/nix/default.nix" {
                 stdenv = final.gcc13Stdenv;
                 # version = "${props.version}+date=${date}_${inputs.hyprland.shortRev or "dirty"}";
-                version = "${props.version}_${inputs.hyprland.shortRev or "dirty"}";
+                version = "${inputs.hyprland.shortRev or "dirty"}";
                 commit = inputs.hyprland.rev or "dirty";
                 inherit date;
               };
@@ -254,7 +254,6 @@
               });
             })
           ];
-
       };
 
       packages."${system}" = mapModules ./packages (p: pkgs.callPackage p { });

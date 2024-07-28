@@ -28,6 +28,7 @@ in
         inherit (pkgs)
           bacon
           cargo
+          cargo-watch
           gcc
           rustc
           rustfmt
