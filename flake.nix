@@ -132,7 +132,7 @@
     };
 
     zls = {
-      url = "github:zigtools/zls?ref=master";
+      url = "github:zigtools/zls?rev=45eb38e2365c3f9fe7cee5a37a0f8d5c8645f888";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
