@@ -94,7 +94,7 @@ in
 
           "$terminal" = "${config.modules.desktop.terminal.default}";
           "$menu" = "rofi -show";
-          "$fileManager" = "${cinnamon.nemo-with-extensions}/bin/nemo";
+          "$fileManager" = "${nemo-with-extensions}/bin/nemo";
 
           # Key bindings
 
@@ -406,7 +406,7 @@ in
       man-pages
       networkmanagerapplet
 
-      cinnamon.nemo-with-extensions
+      nemo-with-extensions
 
       pamixer
       pavucontrol

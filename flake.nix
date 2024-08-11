@@ -225,7 +225,7 @@
 
             (final: prev: {
               hyprland = final.callPackage "${inputs.hyprland}/nix/default.nix" {
-                stdenv = final.gcc13Stdenv;
+                stdenv = final.gcc14Stdenv;
                 # version = "${props.version}+date=${date}_${inputs.hyprland.shortRev or "dirty"}";
                 version = "${inputs.hyprland.shortRev or "dirty"}";
                 commit = inputs.hyprland.rev or "dirty";
