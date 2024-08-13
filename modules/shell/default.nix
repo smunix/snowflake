@@ -61,6 +61,7 @@ in
           file
           hecate
           joshuto
+          protobuf
           pwgen
           ranger
           ripdrag
