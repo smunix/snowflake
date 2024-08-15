@@ -141,6 +141,7 @@ in
     inherit (pkgs)
       cached-nix-shell
       dtrx
+      jless
       gnumake
       # unrar
       pmutils
