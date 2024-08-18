@@ -87,6 +87,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "vboxusers"
     ];
     packages = with pkgs; [
       #  thunderbird

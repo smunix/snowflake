@@ -90,5 +90,7 @@
         };
       };
     };
+
+    virtualize.enable = "vbox";
   };
 }

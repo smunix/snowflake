@@ -10,25 +10,22 @@ let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.my) anyAttrs countAttrs value;
+  inherit (lib.options) mkOption;
+  inherit (lib.types) nullOr enum;
 
   cfg = config.modules.desktop;
 in
 {
-  options.modules.desktop =
-    let
-      inherit (lib.options) mkOption;
-      inherit (lib.types) nullOr enum;
-    in
-    {
-      envProto = mkOption {
-        type = nullOr (enum [
-          "x11"
-          "wayland"
-        ]);
-        description = "What display protocol to use.";
-        default = null;
-      };
+  options.modules.desktop = {
+    envProto = mkOption {
+      type = nullOr (enum [
+        "x11"
+        "wayland"
+      ]);
+      description = "What display protocol to use.";
+      default = null;
     };
+  };
 
   config = mkMerge [
     {

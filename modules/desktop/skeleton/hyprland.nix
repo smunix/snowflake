@@ -438,7 +438,7 @@ in
       # vulkan
       vulkan-loader
       vulkan-tools
-      vulkan-validation-layers
+      # vulkan-validation-layers
 
       wl-clipboard-rs
       wl-clip-persist

@@ -29,6 +29,7 @@ in
           bacon
           cargo
           cargo-watch
+          cargo-expand
           gcc
           rustc
           rustfmt
@@ -51,8 +52,12 @@ in
       hm = {
         programs.nixvim = {
           plugins = {
-            rustaceanvim = { enable = true; };
-            rust-tools = { enable = false; };
+            rustaceanvim = {
+              enable = true;
+            };
+            rust-tools = {
+              enable = false;
+            };
             # lsp-format.lspServersToEnable = [ "rust-analyzer" ];
             lsp.servers = {
               rust-analyzer = {
