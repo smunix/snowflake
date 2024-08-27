@@ -313,7 +313,6 @@ in
           };
 
           general = {
-            apply_sens_to_raw = false;
             layout = "master"; # master | dwindle
             gaps_in = 0;
             gaps_out = 0;

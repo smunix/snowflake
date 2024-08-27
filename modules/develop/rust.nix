@@ -43,8 +43,12 @@ in
         ca = "cargo";
       };
 
+      hm.programs.vscode.enable = true;
       hm.programs.vscode.extensions = attrValues {
         inherit (pkgs.vscode-extensions.rust-lang) rust-analyzer;
+        inherit (pkgs.vscode-extensions.tuttieee) emacs-mcx;
+        inherit (pkgs.vscode-extensions.dracula-theme) theme-dracula;
+        inherit (pkgs.vscode-extensions.vscodevim) vim;
       };
     })
 

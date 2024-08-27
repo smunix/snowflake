@@ -53,7 +53,7 @@ in
     in
     mkMerge [
       (mkIf config.modules.develop.zig.enable {
-        user.packages = attrValues { inherit zig zls; };
+        user.packages = attrValues { inherit zig; };
 
         hm.programs.vscode.extensions = attrValues { inherit (pkgs.vscode-extensions.ziglang) vscode-zig; };
       })

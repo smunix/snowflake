@@ -248,23 +248,23 @@ in
           };
         };
 
-      hm.programs.vscode.extensions =
-        let
-          inherit (cfg.vscode.extension)
-            name
-            publisher
-            version
-            hash
-            ;
-        in
-        pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-          {
-            name = "${name}";
-            publisher = "${publisher}";
-            version = "${version}";
-            hash = "${hash}";
-          }
-        ];
+      # hm.programs.vscode.extensions =
+      #   let
+      #     inherit (cfg.vscode.extension)
+      #       name
+      #       publisher
+      #       version
+      #       hash
+      #       ;
+      #   in
+      #   pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      #     {
+      #       name = "${name}";
+      #       publisher = "${publisher}";
+      #       version = "${version}";
+      #       hash = "${hash}";
+      #     }
+      #   ];
     }
 
     (mkIf (envProto == "wayland") (mkMerge [
@@ -279,10 +279,10 @@ in
               ;
           in
           {
-            cursor_theme_name = "${pointer.name}";
-            font_name = "${font.mono.family}";
-            icon_theme_name = "${iconTheme.name}";
-            theme_name = "${gtk.name}";
+            cursor_theme_name = lib.mkForce "${pointer.name}";
+            font_name = lib.mkForce "${font.mono.family}";
+            icon_theme_name = lib.mkForce "${iconTheme.name}";
+            theme_name = lib.mkForce "${gtk.name}";
           };
       }
 

@@ -139,6 +139,7 @@ in
 
   environment.systemPackages = attrValues {
     inherit (pkgs)
+      atac
       cached-nix-shell
       dtrx
       jless
