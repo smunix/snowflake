@@ -60,6 +60,13 @@ in
                 config.vim.languages = {
                   nix.enable = mkForce true;
                   python.enable = mkForce true;
+                  rust = {
+                    enable = mkForce true;
+                    lsp.package = prev.rust-analyzer;
+                    packages = {
+                      inherit (prev) cargo;
+                    };
+                  };
                 };
               }
             ];
