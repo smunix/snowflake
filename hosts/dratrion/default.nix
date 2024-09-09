@@ -57,6 +57,7 @@
           package = pkgs.neovim;
         };
         emacs.enable = true;
+        helix.enable = true;
       };
       education = {
         vidcom.enable = true;
