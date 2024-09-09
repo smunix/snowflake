@@ -135,6 +135,11 @@
       url = "github:zigtools/zls";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    fcitx5 = {
+      url = "github:catppuccin/fcitx5";
+      flake = false;
+    };
   };
 
   nixConfig = {
@@ -189,6 +194,7 @@
         default = final: prev: {
           unstable = pkgs-unstable;
           my = self.packages.${system};
+          inherit inputs;
         };
 
         nvfetcher = final: prev: {
@@ -229,6 +235,7 @@
                 # version = "${props.version}+date=${date}_${inputs.hyprland.shortRev or "dirty"}";
                 version = "${inputs.hyprland.shortRev or "dirty"}";
                 commit = inputs.hyprland.rev or "dirty";
+                revCount = inputs.hyprland.sourceInfo.revCount or "";
                 inherit date;
               };
               hyprland-unwrapped = final.hyprland.override { wrapRuntimeDeps = false; };
