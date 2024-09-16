@@ -4,38 +4,48 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf;
-in
-{
-  options.modules.desktop.editors.helix =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "post-modern text editor";
-    };
+  inherit (lib.options) mkEnableOption;
+in {
+  options.modules.desktop.editors.helix = {
+    enable = mkEnableOption "post-modern text editor";
+  };
 
   config = mkIf config.modules.desktop.editors.helix.enable (
     let
       inherit (config.modules.themes) editor active;
-      activeTheme = if (active != null) then "${editor.helix.dark}" else "github-dark";
-    in
-    {
+      activeTheme =
+        if (active != null)
+        then "${editor.helix.dark}"
+        else "github-dark";
+    in {
       hm.programs.helix = {
         enable = true;
         package = pkgs.helix;
 
         languages = {
           language = [
-            { name = "latex"; }
+            {name = "latex";}
             {
               name = "haskell";
               formatter.command = "stylish-haskell";
             }
-            { name = "rust"; }
+            {
+              name = "nix";
+              auto-format = true;
+              file-types = ["nix"];
+              formatter.command = getExe pkgs.alejandra;
+              language-servers = ["nil"];
+            }
+            {
+              name = "rust";
+              indent = {
+                tab-width = 2;
+                unit = "  ";
+              };
+            }
           ];
           language-server = {
             nil = {
@@ -91,7 +101,7 @@ in
                 "file-name"
                 "total-line-numbers"
               ];
-              center = [ ];
+              center = [];
               right = [
                 "diagnostics"
                 "file-encoding"

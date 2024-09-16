@@ -146,51 +146,49 @@
     extra-substituters = "https://hyprland.cachix.org";
   };
 
-  outputs =
-    inputs@{
-      self,
-      nixpkgs,
-      nixpkgs-unstable,
-      ...
-    }:
-    let
-      inherit (lib.my) mapModules mapModulesRec mapHosts;
-      system = "x86_64-linux";
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    ...
+  }: let
+    inherit (lib.my) mapModules mapModulesRec mapHosts;
+    system = "x86_64-linux";
 
-      mkPkgs =
-        pkgs: extraOverlays:
-        import pkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg [ "spotify" ]);
-            nvidia.acceptLicense = true;
-          };
-          overlays = extraOverlays ++ (lib.attrValues self.overlays);
+    mkPkgs = pkgs: extraOverlays:
+      import pkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg ["spotify"]);
+          nvidia.acceptLicense = true;
         };
+        overlays = extraOverlays ++ (lib.attrValues self.overlays);
+      };
 
-      pkgs = mkPkgs nixpkgs [
-        self.overlays.default
-        self.overlays.hyprland
-      ];
-      pkgs-unstable = mkPkgs nixpkgs-unstable [
-        self.overlays.default
-        self.overlays.hyprland
-      ];
+    pkgs = mkPkgs nixpkgs [
+      self.overlays.default
+      self.overlays.hyprland
+    ];
+    pkgs-unstable = mkPkgs nixpkgs-unstable [
+      self.overlays.default
+      self.overlays.hyprland
+    ];
 
-      lib = nixpkgs.lib.extend (
-        final: prev: {
-          my = import ./lib {
-            inherit pkgs inputs;
-            lib = final;
-          };
-        }
-      );
-    in
-    {
-      lib = lib.my;
+    lib = nixpkgs.lib.extend (
+      final: prev: {
+        my = import ./lib {
+          inherit pkgs inputs;
+          lib = final;
+        };
+      }
+    );
+  in {
+    lib = lib.my;
 
-      overlays = (mapModules ./overlays import) // {
+    overlays =
+      (mapModules ./overlays import)
+      // {
         default = final: prev: {
           unstable = pkgs-unstable;
           my = self.packages.${system};
@@ -200,7 +198,8 @@
         nvfetcher = final: prev: {
           sources = builtins.mapAttrs (_: p: p.src) (
             (import ./packages/_sources/generated.nix) {
-              inherit (final)
+              inherit
+                (final)
                 fetchurl
                 fetchgit
                 fetchFromGitHub
@@ -210,18 +209,15 @@
           );
         };
 
-        hyprland =
-          let
-            # props = builtins.fromJSON (builtins.readFile "${inputs.hyprland}/props.json");
-            mkDate =
-              longDate:
-              (lib.concatStringsSep "-" [
-                (builtins.substring 0 4 longDate)
-                (builtins.substring 4 2 longDate)
-                (builtins.substring 6 2 longDate)
-              ]);
-            date = mkDate (inputs.hyprland.lastModificationDate or "19700101");
-          in
+        hyprland = let
+          # props = builtins.fromJSON (builtins.readFile "${inputs.hyprland}/props.json");
+          mkDate = longDate: (lib.concatStringsSep "-" [
+            (builtins.substring 0 4 longDate)
+            (builtins.substring 4 2 longDate)
+            (builtins.substring 6 2 longDate)
+          ]);
+          date = mkDate (inputs.hyprland.lastModificationDate or "19700101");
+        in
           lib.composeManyExtensions [
             inputs.hyprcursor.overlays.default
             inputs.hyprlang.overlays.default
@@ -238,20 +234,24 @@
                 revCount = inputs.hyprland.sourceInfo.revCount or "";
                 inherit date;
               };
-              hyprland-unwrapped = final.hyprland.override { wrapRuntimeDeps = false; };
-              hyprland-debug = final.hyprland.override { debug = true; };
-              hyprland-legacy-renderer = final.hyprland.override { legacyRenderer = true; };
+              hyprland-unwrapped = final.hyprland.override {wrapRuntimeDeps = false;};
+              hyprland-debug = final.hyprland.override {debug = true;};
+              hyprland-legacy-renderer = final.hyprland.override {legacyRenderer = true;};
 
               # deprecated packages
-              hyprland-nvidia = builtins.trace ''
-                hyprland-nvidia was removed. Please use the hyprland package.
-                Nvidia patches are no longer needed.
-              '' final.hyprland;
+              hyprland-nvidia =
+                builtins.trace ''
+                  hyprland-nvidia was removed. Please use the hyprland package.
+                  Nvidia patches are no longer needed.
+                ''
+                final.hyprland;
 
-              hyprland-hidpi = builtins.trace ''
-                hyprland-hidpi was removed. Please use the hyprland package.
-                For more information, refer to https://wiki.hyprland.org/Configuring/XWayland.
-              '' final.hyprland;
+              hyprland-hidpi =
+                builtins.trace ''
+                  hyprland-hidpi was removed. Please use the hyprland package.
+                  For more information, refer to https://wiki.hyprland.org/Configuring/XWayland.
+                ''
+                final.hyprland;
             })
             (final: prev: {
               xwayland = prev.xwayland.overrideAttrs (old: {
@@ -263,27 +263,31 @@
           ];
       };
 
-      packages."${system}" = mapModules ./packages (p: pkgs.callPackage p { });
+    packages."${system}" = mapModules ./packages (p: pkgs.callPackage p {});
 
-      nixosModules = {
+    nixosModules =
+      {
         snowflake = import ./.;
-      } // mapModulesRec ./modules import;
+      }
+      // mapModulesRec ./modules import;
 
-      nixosConfigurations = mapHosts ./hosts { };
+    nixosConfigurations = mapHosts ./hosts {};
 
-      devShells."${system}".default = import ./shell.nix { inherit lib pkgs; };
+    devShells."${system}".default = import ./shell.nix {inherit lib pkgs;};
 
-      templates.full = {
+    templates.full =
+      {
         path = ./.;
         description = "λ well-tailored and configureable NixOS system!";
-      } // import ./templates;
+      }
+      // import ./templates;
 
-      templates.default = self.templates.full;
+    templates.default = self.templates.full;
 
-      # TODO: deployment + template tool.
-      # apps."${system}" = {
-      #   type = "app";
-      #   program = ./bin/hagel;
-      # };
-    };
+    # TODO: deployment + template tool.
+    # apps."${system}" = {
+    #   type = "app";
+    #   program = ./bin/hagel;
+    # };
+  };
 }
