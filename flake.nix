@@ -24,10 +24,22 @@
     # Window Manager(s) + Extensions
     xmonad-contrib.url = "github:icy-thought/xmonad-contrib"; # TODO: replace with official after #582 == merged!
 
+    udis86-hyprland = {
+      url = "github:canihavesomecoffee/udis86";
+      flake = false;
+    };
+
     hyprland = {
       # https://github.com/NixOS/nix/issues/4423#issuecomment-2027886625
-      url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=main";
+      # url = "git+https://github.com/hyprwm/Hyprland?submodules=1&ref=main";
+      url = "github:hyprwm/Hyprland?submodules=1&ref=main";
       flake = false;
+    };
+
+    hyprland-protocols = {
+      url = "github:hyprwm/hyprland-protocols";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
 
     hyprcursor = {
@@ -223,6 +235,7 @@
             inputs.hyprlang.overlays.default
             inputs.hyprutils.overlays.default
             inputs.hyprwayland-scanner.overlays.default
+            inputs.hyprland-protocols.overlays.default
             inputs.xdph.overlays.xdg-desktop-portal-hyprland
 
             (final: prev: {
@@ -237,6 +250,11 @@
               hyprland-unwrapped = final.hyprland.override {wrapRuntimeDeps = false;};
               hyprland-debug = final.hyprland.override {debug = true;};
               hyprland-legacy-renderer = final.hyprland.override {legacyRenderer = true;};
+
+              udis86-hyprland = prev.udis86.overrideAttrs (self: super: {
+                src = inputs.udis86-hyprland;
+                patches = [];
+              });
 
               # deprecated packages
               hyprland-nvidia =

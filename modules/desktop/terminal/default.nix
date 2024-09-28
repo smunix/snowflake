@@ -4,14 +4,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.modules) mkDefault mkIf mkMerge;
   inherit (lib.options) mkOption;
   inherit (lib.types) nullOr enum;
+  inherit (lib.attrsets) attrValues;
   cfg = config.modules.desktop.terminal;
-in
-{
+in {
   options.modules.desktop.terminal = {
     default = mkOption {
       type = nullOr (enum [
@@ -31,15 +30,16 @@ in
     {
       services.xserver.desktopManager.xterm.enable = mkDefault (cfg.default == "xterm");
       env.TERMINAL = cfg.default;
+      user.packages = attrValues {inherit (pkgs) warp-terminal;};
     }
 
-    (mkIf (cfg.default == "alacritty") { modules.desktop.terminal.alacritty.enable = true; })
-    (mkIf (cfg.default == "kitty") { modules.desktop.terminal.kitty.enable = true; })
-    (mkIf (cfg.default == "rio") { modules.desktop.terminal.rio.enable = true; })
-    (mkIf (cfg.default == "wezterm") { modules.desktop.terminal.wezterm.enable = true; })
+    (mkIf (cfg.default == "alacritty") {modules.desktop.terminal.alacritty.enable = true;})
+    (mkIf (cfg.default == "kitty") {modules.desktop.terminal.kitty.enable = true;})
+    (mkIf (cfg.default == "rio") {modules.desktop.terminal.rio.enable = true;})
+    (mkIf (cfg.default == "wezterm") {modules.desktop.terminal.wezterm.enable = true;})
 
     (mkIf (config.modules.desktop.envProto == "x11") {
-      services.xserver.excludePackages = mkIf (cfg.default != "xterm") [ pkgs.xterm ];
+      services.xserver.excludePackages = mkIf (cfg.default != "xterm") [pkgs.xterm];
     })
   ];
 }
