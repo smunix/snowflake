@@ -5,8 +5,7 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   # https://www.youtube.com/watch?v=61wGzIv12Ds
   inherit (builtins) readFile toPath;
   inherit (lib.attrsets) attrValues mapAttrsToList;
@@ -24,9 +23,7 @@ let
     HYPRLAND_LOG_WLR = "1";
     SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/ssh-agent.socket";
   };
-
-in
-{
+in {
   options.modules.desktop.hyprland = {
     enable = mkEnableOption "hyped wayland WM";
   };
@@ -62,7 +59,7 @@ in
       enable = true;
       # extraPortals = with pkgs; [ (xdg-desktop-portal-hyprland.override { inherit hyprland; }) ];
       # https://github.com/flatpak/xdg-desktop-portal/blob/1.18.1/doc/portals.conf.rst.in
-      configPackages = with pkgs; [ (xdg-desktop-portal-hyprland.override { inherit hyprland; }) ];
+      configPackages = with pkgs; [(xdg-desktop-portal-hyprland.override {inherit hyprland;})];
       wlr.enable = true;
       xdgOpenUsePortal = true;
     };
@@ -72,7 +69,7 @@ in
     };
 
     hm = {
-      imports = with inputs; [ (import "${hyprland}/nix/hm-module.nix" hyprland) ];
+      imports = with inputs; [(import "${hyprland}/nix/hm-module.nix" hyprland)];
 
       wayland.windowManager.hyprland = {
         enable = true;
@@ -321,7 +318,6 @@ in
             "col.inactive_border" = "0x00000000";
             border_part_of_window = false;
             no_border_on_floating = false;
-
           };
           decoration = {
             rounding = 5;
@@ -338,13 +334,13 @@ in
               xray = true;
             };
 
-            drop_shadow = true;
+            # drop_shadow = true;
 
-            shadow_ignore_window = true;
-            shadow_offset = "0 2";
-            shadow_range = 20;
-            shadow_render_power = 3;
-            "col.shadow" = "rgba(00000055)";
+            # shadow_ignore_window = true;
+            # shadow_offset = "0 2";
+            # shadow_range = 20;
+            # shadow_render_power = 3;
+            # "col.shadow" = "rgba(00000055)";
           };
 
           animations = {
@@ -379,7 +375,7 @@ in
             new_status = "master";
             # new_is_master        = true;
             new_on_top = true;
-            no_gaps_when_only = true;
+            # no_gaps_when_only = true;
             special_scale_factor = 0.8;
           };
 
@@ -412,6 +408,8 @@ in
       playerctl
       poweralertd
 
+      wdisplays
+
       wf-recorder
       wlr-randr
       # wallpapers
@@ -441,15 +439,13 @@ in
 
       wl-clipboard-rs
       wl-clip-persist
-
     ];
 
     home = {
       # System wallpaper:
-      configFile.hypr-wallpaper =
-        let
-          inherit (config.modules.themes) wallpaper;
-        in
+      configFile.hypr-wallpaper = let
+        inherit (config.modules.themes) wallpaper;
+      in
         mkIf (wallpaper != null) {
           target = "hypr/hyprpaper.conf";
           text = ''

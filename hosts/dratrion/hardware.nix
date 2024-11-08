@@ -4,15 +4,14 @@
   pkgs,
   modulesPath,
   ...
-}:
-{
+}: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./v4l2loopback.nix
   ];
 
   boot = {
-    extraModulePackages = [ ];
+    extraModulePackages = [];
     initrd.availableKernelModules = [
       "ahci"
       "xhci_pci"
@@ -22,8 +21,8 @@
       "usb_storage"
       "sd_mod"
     ];
-    initrd.kernelModules = [ ];
-    kernelModules = [ "kvm-intel" ];
+    initrd.kernelModules = [];
+    kernelModules = ["kvm-intel"];
     kernelParams = [
       "pcie_aspm.policy=performance"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
@@ -55,7 +54,7 @@
     fsType = "btrfs";
   };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -70,6 +69,7 @@
 
   hardware = {
     cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    logitech.wireless.enable = true;
     # Hyprland user experience
     nvidia = {
       modesetting.enable = true;
@@ -105,7 +105,7 @@
   services = {
     upower.enable = true;
     xserver = {
-      videoDrivers = [ "nvidia" ];
+      videoDrivers = ["nvidia"];
       # videoDrivers = [ "nouveau" ];
       deviceSection = ''
         Option "TearFree" "true"

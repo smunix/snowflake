@@ -4,8 +4,7 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (builtins) isAttrs;
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
@@ -14,8 +13,7 @@ let
   inherit (lib.types) nullOr enum;
 
   cfg = config.modules.desktop;
-in
-{
+in {
   options.modules.desktop = {
     envProto = mkOption {
       type = nullOr (enum [
@@ -39,16 +37,17 @@ in
             let
               srv = config.services;
             in
-            (srv.xserver.enable && (cfg.envProto == "x11"))
-            # || (config.programs.sway.enable)
-            || (cfg.envProto == "wayland")
-            || !(anyAttrs (n: v: isAttrs v && anyAttrs (n: v: isAttrs v && v.enable)) cfg);
+              (srv.xserver.enable && (cfg.envProto == "x11"))
+              # || (config.programs.sway.enable)
+              || (cfg.envProto == "wayland")
+            # || !(anyAttrs (n: v: isAttrs v && anyAttrs (n: v: isAttrs v && v.enable)) cfg);
+            ;
           message = "Prevent desktop applications from enabling without a DE/WM.";
         }
       ];
 
       env = {
-        GTK_DATA_PREFIX = [ "${config.system.path}" ];
+        GTK_DATA_PREFIX = ["${config.system.path}"];
         QT_QPA_PLATFORMTHEME = "gnome";
         QT_STYLE_OVERRIDE = "Adwaita";
       };
@@ -61,7 +60,8 @@ in
       '';
 
       user.packages = attrValues {
-        inherit (pkgs)
+        inherit
+          (pkgs)
           nvfetcher
           clipboard-jh
           gucharmap
@@ -69,6 +69,7 @@ in
           kalker
           qgnomeplatform # Qt -> GTK Theme
           # youtube-music
+          
           ;
 
         kalker-launcher = pkgs.makeDesktopItem {
@@ -87,9 +88,8 @@ in
       fonts = {
         fontDir.enable = true;
         enableGhostscriptFonts = true;
-        packages = attrValues { inherit (pkgs) sarasa-gothic scheherazade-new; };
+        packages = attrValues {inherit (pkgs) sarasa-gothic scheherazade-new;};
       };
-
     }
 
     (mkIf (cfg.envProto == "wayland") {
@@ -132,39 +132,37 @@ in
         Hyprland
       '';
 
-      hm.services.swayidle =
-        let
-          lockCmd = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --fade-in 0.2";
-        in
-        {
-          enable = true;
-          systemdTarget = "hyprland-session.target";
-          timeouts = with pkgs; [
-            # {
-            #   timeout = 300; # 5 min, lock screen
-            #   command = lockCmd;
-            # }
-            {
-              timeout = 600; # 10 min, switch screen off
-              command = "hyprctl dispatch dpms off";
-              resumeCommand = "hyprctl dispatch dpms on";
-            }
-            {
-              timeout = 900; # 15 min, suspend
-              command = "${systemd}/bin/systemctl suspend";
-            }
-          ];
-          events = with pkgs; [
-            # {
-            #   event = "before-sleep";
-            #   command = lockCmd;
-            # }
-            {
-              event = "lock";
-              command = lockCmd;
-            }
-          ];
-        };
+      hm.services.swayidle = let
+        lockCmd = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-blur 7x5 --fade-in 0.2";
+      in {
+        enable = true;
+        systemdTarget = "hyprland-session.target";
+        timeouts = with pkgs; [
+          # {
+          #   timeout = 300; # 5 min, lock screen
+          #   command = lockCmd;
+          # }
+          {
+            timeout = 600; # 10 min, switch screen off
+            command = "hyprctl dispatch dpms off";
+            resumeCommand = "hyprctl dispatch dpms on";
+          }
+          {
+            timeout = 900; # 15 min, suspend
+            command = "${systemd}/bin/systemctl suspend";
+          }
+        ];
+        events = with pkgs; [
+          # {
+          #   event = "before-sleep";
+          #   command = lockCmd;
+          # }
+          {
+            event = "lock";
+            command = lockCmd;
+          }
+        ];
+      };
 
       hm.wayland.windowManager.sway = {
         enable = false;
@@ -197,7 +195,7 @@ in
 
       xdg.portal = {
         enable = true;
-        configPackages = [ pkgs.xdg-desktop-portal-gtk ];
+        configPackages = [pkgs.xdg-desktop-portal-gtk];
         # config.common.default = "*";
       };
       services.gnome.gnome-keyring.enable = true;

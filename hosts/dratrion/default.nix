@@ -3,9 +3,8 @@
   config,
   lib,
   ...
-}:
-{
-  imports = [ ./hardware.nix ];
+}: {
+  imports = [./hardware.nix];
 
   modules = {
     shell = {
@@ -44,8 +43,8 @@
     };
 
     desktop = {
-      deepin.enable = false;
-      hyprland.enable = true;
+      deepin.enable = true;
+      hyprland.enable = false;
 
       # terminal.default = "rio";
       # terminal.default = "wezterm";

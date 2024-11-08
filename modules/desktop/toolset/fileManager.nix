@@ -4,16 +4,14 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.options) mkEnableOption mkOption;
   inherit (lib.types) nullOr enum;
 
   cfg = config.modules.desktop.toolset.fileManager;
-in
-{
+in {
   options.modules.desktop.toolset.fileManager = {
     enable = mkEnableOption "A file-browser for our desktop";
     program = mkOption {
@@ -35,14 +33,15 @@ in
       services.gvfs.enable = true;
 
       environment.systemPackages = attrValues (
-        { }
-        // optionalAttrs (cfg.program == "dolphin") { inherit (pkgs) dolphin dolphin-plugins; }
+        {}
+        // optionalAttrs (cfg.program == "dolphin") {inherit (pkgs) dolphin dolphin-plugins;}
         // optionalAttrs (cfg.program == "nautilus") {
-          inherit (pkgs.gnome) nautilus;
-          inherit (pkgs) nautilus-open-any-terminal;
+          # inherit (pkgs.gnome) nautilus;
+          inherit (pkgs) nautilus nautilus-open-any-terminal;
         }
         // optionalAttrs (cfg.program == "thunar") {
-          inherit (pkgs.xfce)
+          inherit
+            (pkgs.xfce)
             thunar
             thunar-volman
             thunar-archive-plugin
