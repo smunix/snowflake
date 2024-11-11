@@ -26,6 +26,13 @@ in {
           enable = true;
           userSettings = {
             vim_mod = true;
+            ui_font_size = 12;
+            buffer_font_size = 12;
+            theme = {
+              mode = "system";
+              light = "Catppuccin Mocha (Blur)";
+              dark = "One Dark";
+            };
           };
           extensions = ["nix" "xy-zed"];
         };

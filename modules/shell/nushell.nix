@@ -4,13 +4,11 @@
   pkgs,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib.modules) mkIf;
 
   cfg = config.modules.shell;
-in
-{
+in {
   config = mkIf (cfg.default == "nushell") {
     modules.shell = {
       corePkgs.enable = true;
@@ -41,6 +39,8 @@ in
         less = "less -R";
         wup = "systemctl start wg-quick-Akkadian-VPN.service";
         wud = "systemctl stop wg-quick-Akkadian-VPN.service";
+        z = "zeditor";
+        zed = "zeditor";
       };
     };
   };

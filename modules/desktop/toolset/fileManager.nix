@@ -36,7 +36,6 @@ in {
         {}
         // optionalAttrs (cfg.program == "dolphin") {inherit (pkgs) dolphin dolphin-plugins;}
         // optionalAttrs (cfg.program == "nautilus") {
-          # inherit (pkgs.gnome) nautilus;
           inherit (pkgs) nautilus nautilus-open-any-terminal;
         }
         // optionalAttrs (cfg.program == "thunar") {

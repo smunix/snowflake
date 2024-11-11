@@ -151,6 +151,7 @@ in {
       gnumake
       logitech-udev-rules
       ltunify
+      nodejs
       pmutils
       solaar
       unzip
