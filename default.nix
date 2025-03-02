@@ -151,6 +151,8 @@ in {
       gnumake
       logitech-udev-rules
       ltunify
+      nixd
+      nil
       nodejs
       pmutils
       solaar

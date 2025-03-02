@@ -4,13 +4,11 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption;
-in
-{
+in {
   options.modules.desktop.gnome = {
     enable = mkEnableOption "modern desktop environment";
   };
@@ -37,7 +35,7 @@ in
     };
 
     services.udev = {
-      packages = [ pkgs.gnome.gnome-settings-daemon ];
+      packages = [pkgs.gnome-settings-daemon];
       extraRules = ''
         ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
         ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
@@ -48,7 +46,8 @@ in
     user.packages = attrValues {
       inherit (pkgs) dconf2nix;
       inherit (pkgs.gnome) polari gnome-disk-utility gnome-tweaks;
-      inherit (pkgs.gnomeExtensions)
+      inherit
+        (pkgs.gnomeExtensions)
         appindicator
         aylurs-widgets
         blur-my-shell

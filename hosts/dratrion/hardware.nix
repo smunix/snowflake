@@ -89,7 +89,6 @@
         vdpauinfo
       ];
     };
-    pulseaudio.enable = false;
   };
 
   # Nix settings
@@ -103,6 +102,7 @@
   powerManagement.cpuFreqGovernor = "ondemand";
 
   services = {
+    pulseaudio.enable = false;
     upower.enable = true;
     xserver = {
       videoDrivers = ["nvidia"];

@@ -24,10 +24,18 @@ in {
       hm.programs = {
         zed-editor = {
           enable = true;
+          # package = pkgs.buildFHSUserEnv {
+          #   name = "zed";
+          #   targetPkgs = pkgs:
+          #     with pkgs; [
+          #       zed-editor
+          #     ];
+          #   runScript = "zeditor";
+          # };
           userSettings = {
-            vim_mod = true;
-            ui_font_size = 12;
-            buffer_font_size = 12;
+            vim_mode = true;
+            ui_font_size = 10;
+            buffer_font_size = 10;
             theme = {
               mode = "system";
               light = "Catppuccin Mocha (Blur)";

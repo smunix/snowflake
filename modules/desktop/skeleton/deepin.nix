@@ -46,7 +46,7 @@ in {
     # };
 
     services.udev = {
-      packages = [pkgs.gnome.gnome-settings-daemon];
+      packages = [pkgs.gnome-settings-daemon];
       extraRules = ''
         ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
         ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
