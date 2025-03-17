@@ -47,8 +47,8 @@
       hyprland.enable = false;
 
       # terminal.default = "rio";
-      # terminal.default = "wezterm";
-      terminal.default = "alacritty";
+      terminal.default = "wezterm";
+      # terminal.default = "alacritty";
       editors = {
         default = "nvim";
         neovim = {
