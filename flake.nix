@@ -6,6 +6,21 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixpkgs-unstable";
     systems.url = "github:nix-systems/default-linux";
 
+    bacon-ls = {
+      url = "github:crisidev/bacon-ls?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    bacon = {
+      url = "github:canop/bacon?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    devenv = {
+      url = "github:cachix/devenv?main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -181,10 +196,16 @@
     pkgs = mkPkgs nixpkgs [
       self.overlays.default
       self.overlays.hyprland
+      inputs.devenv.overlays.default
+      inputs.bacon.overlay.${system}
+      inputs.bacon-ls.overlay.${system}
     ];
     pkgs-unstable = mkPkgs nixpkgs-unstable [
       self.overlays.default
       self.overlays.hyprland
+      inputs.devenv.overlays.default
+      inputs.bacon.overlay.${system}
+      inputs.bacon-ls.overlay.${system}
     ];
 
     lib = nixpkgs.lib.extend (

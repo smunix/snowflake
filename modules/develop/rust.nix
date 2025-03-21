@@ -26,9 +26,11 @@ in {
         inherit
           (pkgs)
           bacon
+          # bacon-ls
           cargo
-          cargo-watch
           cargo-expand
+          cargo-nextest
+          cargo-watch
           gcc
           rustc
           rustfmt
