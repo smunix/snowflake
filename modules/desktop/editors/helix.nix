@@ -69,14 +69,14 @@ in {
                   tab-width = 2;
                   unit = "  ";
                 };
-                language-servers = ["rust-analyzer"];
+                # language-servers = ["rust-analyzer"];
               }
             ];
             language-server = {
-              rust-analyzer = {
-                config.checkOnSave.enable = true;
-                config.diagnostisc.enable = true;
-              };
+              # rust-analyzer = {
+              #   config.checkOnSave.enable = true;
+              #   config.diagnostisc.enable = true;
+              # };
 
               # bacon-ls = {
               #   command = "${pkgs.bacon-ls}/bin/bacon-ls";

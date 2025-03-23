@@ -19,23 +19,24 @@ in {
 
   config = mkMerge [
     (mkIf config.modules.develop.rust.enable {
-      nixpkgs.overlays = [inputs.rust.overlays.default];
+      nixpkgs.overlays = [inputs.fenix.overlays.default];
 
       user.packages = attrValues {
-        rust-package = pkgs.rust-bin.beta.latest.default;
+        # rust-package = pkgs.rust-bin.beta.latest.default;
+        inherit (pkgs.fenix.complete) toolchain;
         inherit
           (pkgs)
           bacon
           # bacon-ls
-          cargo
+          # cargo
           cargo-expand
           cargo-nextest
           cargo-watch
           gcc
-          rustc
-          rustfmt
-          rust-analyzer
-          rust-script
+          # rustc
+          # rustfmt
+          # rust-analyzer
+          # rust-script
           ;
       };
 
