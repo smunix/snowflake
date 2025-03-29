@@ -4,15 +4,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.options) mkOption mkEnableOption;
   inherit (lib.types) nullOr enum;
   cfg = config.modules.shell;
-in
-{
+in {
   options.modules.shell = {
     default = mkOption {
       type = nullOr (enum [
@@ -30,7 +28,9 @@ in
   config = mkMerge [
     (mkIf (cfg.default != null) {
       users.defaultUserShell =
-        if cfg.default == "nushell" then "${pkgs.nushell}/bin/nu" else pkgs."${cfg.default}";
+        if cfg.default == "nushell"
+        then "${pkgs.nushell}/bin/nu"
+        else pkgs."${cfg.default}";
     })
 
     (mkIf cfg.corePkgs.enable {
@@ -43,7 +43,7 @@ in
       hm.programs.direnv = {
         enable = true;
         nix-direnv.enable = true;
-        config.whitelist.prefix = [ "/home" ];
+        config.whitelist.prefix = ["/home"];
       };
 
       programs.nh = {
@@ -54,7 +54,8 @@ in
       };
 
       user.packages = attrValues {
-        inherit (pkgs)
+        inherit
+          (pkgs)
           ack
           any-nix-shell
           dtrx
@@ -75,7 +76,7 @@ in
 
         # GNU Alternatives
         inherit (pkgs) bat fd zoxide;
-        rgFull = pkgs.ripgrep.override { withPCRE2 = true; };
+        rgFull = pkgs.ripgrep.override {withPCRE2 = true;};
       };
     })
   ];

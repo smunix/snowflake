@@ -26,7 +26,7 @@ in {
         inherit (pkgs.fenix.complete) toolchain;
         inherit
           (pkgs)
-          bacon
+          # bacon
           # bacon-ls
           # cargo
           cargo-expand
@@ -45,6 +45,10 @@ in {
         ca = "cargo";
       };
 
+      hm.programs.bacon = {
+        enable = true;
+        package = pkgs.bacon;
+      };
       hm.programs.vscode.enable = true;
       hm.programs.vscode.extensions = attrValues {
         inherit (pkgs.vscode-extensions.rust-lang) rust-analyzer;
