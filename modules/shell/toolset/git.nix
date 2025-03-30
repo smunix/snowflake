@@ -42,6 +42,10 @@ in {
       # GITHUB_TOKEN = "$(cat /run/agenix/tokenGH)";
     };
 
+    hm.programs.gitui = {
+      enable = true;
+    };
+
     hm.programs.git = {
       enable = true;
       package = pkgs.gitFull;
