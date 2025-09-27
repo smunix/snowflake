@@ -154,6 +154,7 @@ in {
       nixd
       nil
       nodejs
+      pkg-config
       pmutils
       solaar
       unzip

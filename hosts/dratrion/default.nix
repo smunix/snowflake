@@ -43,7 +43,8 @@
     };
 
     desktop = {
-      deepin.enable = true;
+      plasma.enable = true;
+      deepin.enable = false;
       hyprland.enable = false;
 
       # terminal.default = "rio";

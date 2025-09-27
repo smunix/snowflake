@@ -57,6 +57,7 @@ in {
         inherit
           (pkgs)
           ack
+          android-studio
           any-nix-shell
           dtrx
           file
