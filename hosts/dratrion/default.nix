@@ -44,7 +44,7 @@
 
     desktop = {
       plasma.enable = true;
-      deepin.enable = false;
+      gnome.enable = false;
       hyprland.enable = false;
 
       # terminal.default = "rio";

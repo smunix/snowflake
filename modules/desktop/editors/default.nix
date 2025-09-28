@@ -49,13 +49,13 @@ in {
       };
     })
 
-    # {
-    #   user.packages = attrValues {
-    #     inherit
-    #       (pkgs)
-    #       quarto
-    #       ;
-    #   };
-    # }
+    {
+      user.packages = attrValues {
+        inherit
+          (pkgs)
+          quarto
+          ;
+      };
+    }
   ];
 }
