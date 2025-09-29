@@ -130,6 +130,9 @@
       url = "github:doomemacs/doomemacs";
       flake = false;
     };
+    kimi-code = {
+      url = "github:moonshotai/kimi-code";
+    };
     nvim-dir = {
       url = "https://github.com/Icy-Thought/nvim.d.git";
       type = "git";
