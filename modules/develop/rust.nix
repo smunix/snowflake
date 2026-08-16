@@ -38,6 +38,7 @@ in {
           # rust-analyzer
           # rust-script
           ;
+        inherit (inputs.kimi-code.packages.x86_64-linux) kimi-code;
       };
 
       environment.shellAliases = {

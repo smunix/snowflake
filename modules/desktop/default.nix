@@ -69,7 +69,6 @@ in {
           kalker
           qgnomeplatform # Qt -> GTK Theme
           # youtube-music
-          
           ;
 
         kalker-launcher = pkgs.makeDesktopItem {
@@ -123,7 +122,7 @@ in {
               --time \
               --asterisks \
               --user-menu \
-              --cmd "Hyprland --config ${config.user.home}/.config/hypr/hyprland.conf"
+              --cmd "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland"
           '';
         };
       };

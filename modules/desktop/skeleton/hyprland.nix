@@ -45,7 +45,7 @@ in {
           dunst.enable = true;
           waybar.enable = true;
           elkowar.enable = true;
-          rofi.enable = true;
+          rofi.enable = false;
         };
       };
       shell.scripts = {

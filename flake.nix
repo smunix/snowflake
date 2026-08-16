@@ -130,6 +130,9 @@
       url = "github:doomemacs/doomemacs";
       flake = false;
     };
+    kimi-code = {
+      url = "github:moonshotai/kimi-code";
+    };
     nvim-dir = {
       url = "https://github.com/Icy-Thought/nvim.d.git";
       type = "git";
@@ -192,7 +195,7 @@
         inherit system;
         config = {
           allowUnfree = true;
-          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg ["spotify"]);
+          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg ["spotify" "vscode"]);
           nvidia.acceptLicense = true;
         };
         overlays = extraOverlays ++ (lib.attrValues self.overlays);

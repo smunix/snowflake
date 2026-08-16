@@ -4,74 +4,68 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues optionalAttrs;
   inherit (lib.modules) mkIf mkMerge;
   inherit (lib.meta) getExe;
   inherit (lib.strings) optionalString;
   cfg = config.modules.desktop.editors.emacs;
-in
-{
-  options.modules.desktop.editors.emacs =
-    let
-      inherit (lib.options) mkEnableOption mkOption;
-      inherit (lib.types) enum nullOr package;
-    in
-    {
-      enable = mkEnableOption "Sprinkle a bit of magic to our nix-flake.";
-      package = mkOption {
-        type = package;
-        default =
-          if (config.modules.desktop.envProto == "wayland") then
-            pkgs.emacs-pgtk
-          else
-            pkgs.emacs-git.override { withGTK3 = true; };
-        description = "Emacs package which will be installed in our flake system.";
-      };
-      terminal = mkOption {
-        type = nullOr (enum [
-          "Eat"
-          "VTerm"
-        ]);
-        default = "VTerm";
-        description = "Terminal emulator used within Emacs.";
-      };
-      template = mkOption {
-        type = nullOr (enum [
-          "doomemacs"
-          "irkalla"
-        ]);
-        default = "doomemacs";
-        description = "Which Emacs configuration to setup.";
-      };
+in {
+  options.modules.desktop.editors.emacs = let
+    inherit (lib.options) mkEnableOption mkOption;
+    inherit (lib.types) enum nullOr package;
+  in {
+    enable = mkEnableOption "Sprinkle a bit of magic to our nix-flake.";
+    package = mkOption {
+      type = package;
+      default =
+        if (config.modules.desktop.envProto == "wayland")
+        then pkgs.emacs-pgtk
+        else pkgs.emacs-git.override {withGTK3 = true;};
+      description = "Emacs package which will be installed in our flake system.";
     };
+    terminal = mkOption {
+      type = nullOr (enum [
+        "Eat"
+        "VTerm"
+      ]);
+      default = "VTerm";
+      description = "Terminal emulator used within Emacs.";
+    };
+    template = mkOption {
+      type = nullOr (enum [
+        "doomemacs"
+        "irkalla"
+      ]);
+      default = "doomemacs";
+      description = "Which Emacs configuration to setup.";
+    };
+  };
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.overlays = [ inputs.emacs.overlay ];
+      nixpkgs.overlays = [inputs.emacs.overlay];
 
       user.packages = attrValues (
         {
           inherit (pkgs) binutils gnutls zstd;
           inherit (pkgs.unstable) emacs-lsp-booster;
-          inherit (pkgs.my) my-cookies; # leetcode.el
+          # inherit (pkgs.my) my-cookies; # leetcode.el
         }
-        // optionalAttrs config.programs.gnupg.agent.enable { inherit (pkgs) pinentry-emacs; }
+        // optionalAttrs config.programs.gnupg.agent.enable {inherit (pkgs) pinentry-emacs;}
       );
       environment.wordlist.enable = true; # cape-dict
 
       hm.programs.emacs = {
         enable = true;
         package = cfg.package;
-        extraPackages =
-          epkgs:
+        extraPackages = epkgs:
           attrValues (
             {
               inherit (epkgs.melpaPackages) jinx pdf-tools telega;
               inherit (epkgs.treesit-grammars) with-all-grammars;
             }
-            // optionalAttrs (cfg.terminal == "VTerm") { inherit (epkgs.melpaPackages) vterm; }
+            // optionalAttrs (cfg.terminal == "VTerm") {inherit (epkgs.melpaPackages) vterm;}
           );
       };
 
@@ -145,20 +139,18 @@ in
 
     (mkIf (cfg.template == "irkalla") {
       home.configFile = {
-        irkalla-init =
-          let
-            configFile = "${inputs.emacs-dir}/config.org";
-          in
-          {
-            target = "emacs/init.org";
-            source = "${configFile}";
-            onChange = ''
-              ${getExe cfg.package} --batch \
-                --eval "(require 'ob-tangle)" \
-                --eval "(setq org-confirm-babel-evaluate nil)" \
-                --eval '(org-babel-tangle-file "${configFile}")'
-            '';
-          };
+        irkalla-init = let
+          configFile = "${inputs.emacs-dir}/config.org";
+        in {
+          target = "emacs/init.org";
+          source = "${configFile}";
+          onChange = ''
+            ${getExe cfg.package} --batch \
+              --eval "(require 'ob-tangle)" \
+              --eval "(setq org-confirm-babel-evaluate nil)" \
+              --eval '(org-babel-tangle-file "${configFile}")'
+          '';
+        };
       };
     })
 

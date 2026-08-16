@@ -18,7 +18,7 @@ in {
   config = mkIf config.modules.shell.toolset.git.enable {
     user.packages = attrValues (
       {
-        inherit (pkgs) act dura gitui;
+        inherit (pkgs) act dura jj-fzf jjui jujutsu gitui lazyjj;
         inherit (pkgs.gitAndTools) gh git-open;
       }
       // optionalAttrs config.modules.shell.toolset.gnupg.enable {inherit (pkgs.gitAndTools) git-crypt;}

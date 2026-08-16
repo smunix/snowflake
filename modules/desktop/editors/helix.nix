@@ -5,6 +5,7 @@
   pkgs,
   ...
 }: let
+  inherit (lib.attrsets) attrValues;
   inherit (lib.meta) getExe;
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption;
@@ -21,6 +22,13 @@ in {
         then "${editor.helix.dark}"
         else "github-dark";
     in {
+      user.packages = attrValues {
+        inherit
+          (pkgs)
+          dprint
+          marksman
+          ;
+      };
       hm.programs = {
         zed-editor = {
           enable = true;

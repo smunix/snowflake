@@ -4,30 +4,26 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.attrsets) attrValues;
   inherit (lib.modules) mkIf mkMerge;
   cfg = config.modules.desktop.editors;
-in
-{
-  options.modules.desktop.editors =
-    let
-      inherit (lib.options) mkOption;
-      inherit (lib.types) nullOr enum;
-    in
-    {
-      default = mkOption {
-        type = nullOr (enum [
-          "helix"
-          "nvim"
-          "emacsclient"
-        ]);
-        default = "nvim";
-        description = "Default editor for text manipulation";
-        example = "emacsclient";
-      };
+in {
+  options.modules.desktop.editors = let
+    inherit (lib.options) mkOption;
+    inherit (lib.types) nullOr enum;
+  in {
+    default = mkOption {
+      type = nullOr (enum [
+        "helix"
+        "nvim"
+        "emacsclient"
+      ]);
+      default = "nvim";
+      description = "Default editor for text manipulation";
+      example = "emacsclient";
     };
+  };
 
   config = mkMerge [
     (mkIf (cfg.default != null) {
@@ -40,7 +36,8 @@ in
 
     (mkIf (cfg.default == "nvim" || cfg.default == "emacsclient") {
       user.packages = attrValues {
-        inherit (pkgs)
+        inherit
+          (pkgs)
           imagemagick
           editorconfig-core-c
           sqlite
@@ -51,5 +48,14 @@ in
         inherit (pkgs.hunspellDicts) en_US sv_SE;
       };
     })
+
+    # {
+    #   user.packages = attrValues {
+    #     inherit
+    #       (pkgs)
+    #       quarto
+    #       ;
+    #   };
+    # }
   ];
 }

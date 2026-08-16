@@ -4,20 +4,18 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib.modules) mkIf;
-in
-{
-  options.modules.shell.bash =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "bash shell" // {
+in {
+  options.modules.shell.bash = let
+    inherit (lib.options) mkEnableOption;
+  in {
+    enable =
+      mkEnableOption "bash shell"
+      // {
         default = true;
       };
-    };
+  };
 
   config = mkIf config.modules.shell.bash.enable {
     # Enable starship-rs + ZSH integration
@@ -35,8 +33,8 @@ in
         "neofetch"
       ];
       shellAliases = {
-        ls = "lsd -Sl";
-        lsa = "lsd -Sla";
+        # ls = "lsd -Sl";
+        # lsa = "lsd -Sla";
         less = "less -R";
         wup = "systemctl start wg-quick-Akkadian-VPN.service";
         wud = "systemctl stop wg-quick-Akkadian-VPN.service";
